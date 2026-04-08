@@ -91,6 +91,7 @@ export function Footer() {
                   href={link.url}
                   aria-label={link.ariaLabel}
                   className="text-nova-gray hover:text-white transition-colors duration-200"
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   {link.platform === 'instagram' ? (
@@ -105,7 +106,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-nova-border pt-6 text-center text-xs text-white/30">
-          © 2026 SoomosNova. Todos los derechos reservados.
+          © {new Date().getFullYear()} SoomosNova. Todos los derechos reservados.
         </div>
       </div>
     </footer>

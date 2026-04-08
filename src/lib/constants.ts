@@ -4,8 +4,8 @@ export const SITE_CONFIG: SiteConfig = {
   siteName: 'SoomosNova',
   domain: 'soomosnova.com',
   calendarUrl: 'https://calendar.app.google/JgHUuWfwyhUqsLV3A',
-  whatsappNumber: '5255995 8257',
-  whatsappUrl: 'https://wa.me/5255995 8257',
+  whatsappNumber: '52559958257',
+  whatsappUrl: 'https://wa.me/52559958257',
   email: 'hola@soomosnova.com',
   phone: '+52 55 5995 8257',
 }
@@ -59,12 +59,12 @@ export const BENEFITS: BenefitCard[] = [
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     platform: 'instagram',
-    url: '#',
+    url: 'https://www.instagram.com/soomosnova',
     ariaLabel: 'Seguir a SoomosNova en Instagram',
   },
   {
     platform: 'facebook',
-    url: '#',
+    url: 'https://www.facebook.com/profile.php?id=61588124897380',
     ariaLabel: 'Seguir a SoomosNova en Facebook',
   },
 ]
