@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { BENEFITS } from '@/lib/constants'
 import type { BenefitCard } from '@/types'
@@ -27,13 +28,14 @@ function BenefitItem({ card }: { card: BenefitCard }) {
         </span>
       </div>
 
-      <div
-        className="w-full md:w-64 shrink-0 rounded-lg bg-nova-black border border-nova-border flex items-center justify-center"
-        style={{ aspectRatio: '16/9' }}
-        aria-label={card.mockupAlt}
-        role="img"
-      >
-        <span className="text-xs text-white/20">Mockup próximamente</span>
+      <div className="w-full md:w-64 shrink-0 rounded-lg overflow-hidden border border-nova-border">
+        <Image
+          src={`/mockups/mockup${card.id}.png`}
+          alt={card.mockupAlt}
+          width={256}
+          height={144}
+          className="w-full h-auto object-cover"
+        />
       </div>
     </motion.article>
   )
