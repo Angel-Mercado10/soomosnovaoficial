@@ -35,10 +35,12 @@ export function Button({ variant = 'primary', className = '', ...props }: Button
   const classes = `${base} ${variants[variant]} ${className}`
 
   if (props.as === 'a') {
-    const { as: _as, ...anchorProps } = props
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { as: _tag, ...anchorProps } = props
     return <a className={classes} {...anchorProps} />
   }
 
-  const { as: _as, ...buttonProps } = props as ButtonAsButton
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { as: _tag, ...buttonProps } = props as ButtonAsButton
   return <button className={classes} {...buttonProps} />
 }

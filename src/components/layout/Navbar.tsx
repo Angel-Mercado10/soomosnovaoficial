@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrolled } from '@/hooks/useScrolled'
 import { NAV_LINKS } from '@/lib/constants'
@@ -27,14 +28,14 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="/" aria-label="SoomosNova — inicio" className="flex items-center">
+        <Link href="/" aria-label="SoomosNova — inicio" className="flex items-center">
           <span className="font-cormorant text-2xl font-semibold tracking-wide text-white">
             Soomos
           </span>
           <span className="font-cormorant text-2xl font-semibold tracking-wide text-nova-gold">
             Nova
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8" role="list">

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -45,10 +46,10 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <a href="/" aria-label="SoomosNova — inicio">
+            <Link href="/" aria-label="SoomosNova — inicio">
               <span className="font-cormorant text-2xl font-semibold text-white">Soomos</span>
               <span className="font-cormorant text-2xl font-semibold text-nova-gold">Nova</span>
-            </a>
+            </Link>
             <p className="mt-3 text-sm text-nova-gray leading-relaxed max-w-xs">
               Gestión digital premium para invitados en bodas de alta gama.
             </p>

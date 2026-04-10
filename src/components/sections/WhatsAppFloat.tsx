@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Modal } from '@/components/ui/Modal'
 import { useModalState } from '@/hooks/useModal'
+import { SITE_CONFIG } from '@/lib/constants'
 
 function WhatsAppIcon() {
   return (
@@ -26,7 +27,7 @@ export function WhatsAppFloat() {
       <motion.button
         onClick={open}
         className="fixed bottom-6 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/30 cursor-pointer"
-        aria-label="Abrir formulario de contacto"
+        aria-label="Contactar a SoomosNova"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -36,7 +37,7 @@ export function WhatsAppFloat() {
         <WhatsAppIcon />
       </motion.button>
 
-      <Modal isOpen={isOpen} onClose={close} />
+      <Modal isOpen={isOpen} onClose={close} whatsappUrl={SITE_CONFIG.whatsappUrl} />
     </>
   )
 }

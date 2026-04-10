@@ -15,14 +15,46 @@ type ContactResult =
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+const MAX_LENGTH = 1000
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function validate(data: ContactFormData): string | null {
+  if (!data.name.trim()) return 'El nombre es obligatorio.'
+  if (!data.email.trim()) return 'El email es obligatorio.'
+  if (!isValidEmail(data.email)) return 'El email no es válido.'
+  if (!data.eventDate.trim()) return 'La fecha del evento es obligatoria.'
+  if (!data.message.trim()) return 'El mensaje es obligatorio.'
+  if (data.name.length > MAX_LENGTH) return 'El nombre es demasiado largo.'
+  if (data.message.length > MAX_LENGTH) return 'El mensaje es demasiado largo.'
+  return null
+}
+
 export async function sendContactEmail(data: ContactFormData): Promise<ContactResult> {
-  const { name, email, eventDate, message } = data
+  const validationError = validate(data)
+  if (validationError) return { success: false, error: validationError }
+
+  const name = escapeHtml(data.name.trim())
+  const email = escapeHtml(data.email.trim())
+  const eventDate = escapeHtml(data.eventDate.trim())
+  const message = escapeHtml(data.message.trim())
 
   try {
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
       to: process.env.CONTACT_EMAIL ?? 'hola@soomosnova.com',
-      replyTo: email,
+      replyTo: data.email.trim(),
       subject: `Nueva consulta de ${name}`,
       html: `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #0A0A0A; color: #ffffff; padding: 40px; border-radius: 12px;">
@@ -52,7 +84,7 @@ export async function sendContactEmail(data: ContactFormData): Promise<ContactRe
           </table>
 
           <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #2A2A2A; text-align: center; color: #9CA3AF; font-size: 12px;">
-            Respondé directamente a este email para contestarle a ${name}.
+            Respond&eacute; directamente a este email para contestarle a ${name}.
           </div>
         </div>
       `,

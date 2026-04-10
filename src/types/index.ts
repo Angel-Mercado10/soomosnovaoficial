@@ -35,8 +35,3 @@ export type MetaConfig = {
   twitterCard: string
 }
 
-export type ModalState = {
-  isOpen: boolean
-  onConfirm: () => void
-  onClose: () => void
-}
