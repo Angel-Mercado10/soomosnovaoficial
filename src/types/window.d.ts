@@ -1,7 +1,2 @@
-import type { Foto } from './database'
-
-declare global {
-  interface Window {
-    __albumSetFotos?: React.Dispatch<React.SetStateAction<Foto[]>>
-  }
-}
+// Placeholder — global window extensions removed in security audit
+export {}

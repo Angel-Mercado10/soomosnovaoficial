@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardStats, NoEventoCTA } from '@/components/dashboard/DashboardStats'
+import { CompletarPerfilForm } from '@/components/dashboard/CompletarPerfilForm'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -21,7 +22,9 @@ export default async function DashboardPage() {
     .single()
 
   if (!pareja) {
-    redirect('/auth/login')
+    // El trigger de Supabase falló — mostrar formulario para completar el perfil
+    // en lugar de redirigir al login (que causaría un loop infinito).
+    return <CompletarPerfilForm userId={user.id} userEmail={user.email ?? ''} />
   }
 
   const { data: evento } = await supabase

@@ -54,19 +54,25 @@ export async function generateQR(
 
   const publicUrl = urlData.publicUrl
 
-  // Guardar en tabla qr_codes (upsert por invitado_id)
+  // Verificar si ya existe un registro para este invitado
+  const { data: existente } = await admin
+    .from('qr_codes')
+    .select('id')
+    .eq('invitado_id', invitadoId)
+    .single()
+
+  // Guardar en tabla qr_codes
+  const qrData = {
+    invitado_id: invitadoId,
+    evento_id: eventoId,
+    storage_path: storagePath,
+    public_url: publicUrl,
+    ...(existente ? { regenerado_at: new Date().toISOString() } : {}),
+  }
+
   const { error: qrError } = await admin
     .from('qr_codes')
-    .upsert(
-      {
-        invitado_id: invitadoId,
-        evento_id: eventoId,
-        storage_path: storagePath,
-        public_url: publicUrl,
-        regenerado_at: new Date().toISOString(),
-      },
-      { onConflict: 'invitado_id' }
-    )
+    .upsert(qrData, { onConflict: 'invitado_id' })
 
   if (qrError) {
     throw new Error(`Error al guardar QR en base de datos: ${qrError.message}`)

@@ -71,6 +71,7 @@ export interface Database {
           pin_venue: string | null
           estado_pago: 'pendiente' | 'pagado'
           stripe_session_id: string | null
+          template: 'clasica' | 'art-deco' | 'celestial' | 'botanical' | 'romantica'
           created_at: string
           deleted_at: string | null
         }
@@ -93,6 +94,7 @@ export interface Database {
           pin_venue?: string | null
           estado_pago?: 'pendiente' | 'pagado'
           stripe_session_id?: string | null
+          template?: 'clasica' | 'art-deco' | 'celestial' | 'botanical' | 'romantica'
           created_at?: string
           deleted_at?: string | null
         }
@@ -115,6 +117,7 @@ export interface Database {
           pin_venue?: string | null
           estado_pago?: 'pendiente' | 'pagado'
           stripe_session_id?: string | null
+          template?: 'clasica' | 'art-deco' | 'celestial' | 'botanical' | 'romantica'
           created_at?: string
           deleted_at?: string | null
         }

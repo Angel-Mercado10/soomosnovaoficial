@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 interface CountdownEventoProps {
   fechaEvento: string
@@ -51,26 +51,34 @@ export default function CountdownEvento({
   fechaEvento,
   horaEvento,
 }: CountdownEventoProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
-    calcularTiempo(fechaEvento, horaEvento)
-  )
-  const [mounted, setMounted] = useState(false)
+  // Client-only state: null until mounted to avoid hydration mismatch
+  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null)
+  const mounted = useRef(false)
 
   useEffect(() => {
-    setMounted(true)
-    const timer = setInterval(() => {
+    mounted.current = true
+
+    const tick = () => {
       setTimeLeft(calcularTiempo(fechaEvento, horaEvento))
-    }, 1000)
-    return () => clearInterval(timer)
+    }
+
+    // Initial tick via setTimeout to satisfy react-hooks/set-state-in-effect
+    const initial = setTimeout(tick, 0)
+    const timer = setInterval(tick, 1000)
+
+    return () => {
+      clearTimeout(initial)
+      clearInterval(timer)
+    }
   }, [fechaEvento, horaEvento])
+
+  if (!timeLeft) return null
 
   const yaPaso =
     timeLeft.dias === 0 &&
     timeLeft.horas === 0 &&
     timeLeft.minutos === 0 &&
     timeLeft.segundos === 0
-
-  if (!mounted) return null // Evita hydration mismatch
 
   if (yaPaso) {
     return (

@@ -24,6 +24,9 @@ interface GuardarFotoResponse {
 
 type UploadEstado = 'idle' | 'firmando' | 'subiendo' | 'guardando' | 'listo' | 'error'
 
+const MAX_FILE_SIZE_MB = 50
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+
 export default function SubirFotoForm({
   eventoId,
   invitadoToken,
@@ -43,6 +46,13 @@ export default function SubirFotoForm({
     if (!esImagen && !esVideo) {
       setEstado('error')
       setErrorMsg('Solo se permiten imágenes y videos.')
+      return
+    }
+
+    // Validar tamaño
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setEstado('error')
+      setErrorMsg(`El archivo es demasiado grande. Máximo ${MAX_FILE_SIZE_MB}MB.`)
       return
     }
 

@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google'
 import { Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
 import { META_CONFIG } from '@/lib/constants'
+import { ToastProvider } from '@/hooks/useToast'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,7 +15,7 @@ const geistSans = Geist({
 const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-cormorant-garamond',
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
   style: ['normal', 'italic'],
   display: 'swap',
 })
@@ -53,7 +54,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${cormorantGaramond.variable}`}
     >
       <body className="min-h-screen bg-nova-black text-nova-white antialiased">
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   )

@@ -87,7 +87,7 @@ export default async function ConfirmacionesPage() {
         <p className="text-[#9CA3AF] text-sm mt-0.5">{evento.nombre_evento}</p>
       </div>
 
-      <ConfirmacionesTable confirmaciones={confirmaciones} />
+      <ConfirmacionesTable confirmaciones={confirmaciones} eventoId={evento.id} />
     </div>
   )
 }

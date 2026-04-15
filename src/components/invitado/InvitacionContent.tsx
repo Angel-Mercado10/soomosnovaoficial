@@ -1,9 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import Image from 'next/image'
 import type { Evento, Invitado } from '@/types/database'
+import { InvitacionCTA } from './templates/InvitacionCTA'
 
 interface InvitacionContentProps {
   invitado: Invitado
@@ -147,18 +147,17 @@ export default function InvitacionContent({
         variants={itemVariants}
         className="flex flex-col sm:flex-row gap-3 w-full max-w-xs"
       >
-        <Link
-          href={`/rsvp/${invitado.token}`}
-          className="flex-1 text-center bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
-        >
-          Confirmar asistencia
-        </Link>
-        <Link
-          href={`/evento/${evento.slug}`}
-          className="flex-1 text-center bg-transparent border border-[#2A2A2A] hover:border-[#C9A84C]/40 text-white text-sm px-6 py-3 rounded-full transition-colors"
-        >
-          Ver detalles
-        </Link>
+        <InvitacionCTA
+          token={invitado.token}
+          eventoSlug={evento.slug}
+          qrUrl={invitado.qr_url}
+          estadoConfirmacion={invitado.estado_confirmacion}
+          accentColor="#C9A84C"
+          textColor="#FFFFFF"
+          borderColor="#2A2A2A"
+          primaryBtnClass="flex-1 text-center bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
+          secondaryBtnClass="flex-1 text-center bg-transparent border border-[#2A2A2A] hover:border-[#C9A84C]/40 text-white text-sm px-6 py-3 rounded-full transition-colors"
+        />
       </motion.div>
 
       {/* Footer ornamento */}

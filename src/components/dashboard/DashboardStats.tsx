@@ -21,6 +21,7 @@ export function DashboardStats({ eventoId, initialStats }: DashboardStatsProps) 
 
   useEffect(() => {
     const supabase = createClient()
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
     const fetchStats = async () => {
       const { data, error } = await supabase
@@ -41,6 +42,11 @@ export function DashboardStats({ eventoId, initialStats }: DashboardStatsProps) 
       setStats({ total, confirmados, pendientes, rechazos })
     }
 
+    const debouncedFetch = () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(fetchStats, 500)
+    }
+
     // Canal Realtime para cambios en invitados
     const channel = supabase
       .channel(`dashboard-stats-${eventoId}`)
@@ -53,12 +59,13 @@ export function DashboardStats({ eventoId, initialStats }: DashboardStatsProps) 
           filter: `evento_id=eq.${eventoId}`,
         },
         () => {
-          fetchStats()
+          debouncedFetch()
         }
       )
       .subscribe()
 
     return () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
       supabase.removeChannel(channel)
     }
   }, [eventoId])

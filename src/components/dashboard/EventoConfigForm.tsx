@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { guardarEvento } from '@/app/actions/evento'
 import type { Evento } from '@/types/database'
+import { TEMPLATES, type InvitationTemplate } from '@/components/invitado/templates'
 
 interface EventoConfigFormProps {
   evento: Evento | null
@@ -25,6 +26,9 @@ export function EventoConfigForm({ evento, parejaId, nombre1, nombre2 }: EventoC
   const [permiteAcompanante, setPermiteAcompanante] = useState(
     evento?.permite_acompanante ?? true
   )
+  const [selectedTemplate, setSelectedTemplate] = useState<InvitationTemplate>(
+    evento?.template ?? 'clasica'
+  )
 
   const handleAddOpcion = () => {
     const trimmed = nuevaOpcion.trim()
@@ -43,6 +47,7 @@ export function EventoConfigForm({ evento, parejaId, nombre1, nombre2 }: EventoC
     const formData = new FormData(e.currentTarget)
     formData.set('opciones_menu', JSON.stringify(opciones))
     formData.set('permite_acompanante', permiteAcompanante ? 'on' : '')
+    formData.set('template', selectedTemplate)
     formData.set('pareja_id', parejaId)
     formData.set('nombre_1', nombre1)
     formData.set('nombre_2', nombre2)
@@ -251,6 +256,72 @@ export function EventoConfigForm({ evento, parejaId, nombre1, nombre2 }: EventoC
         </button>
       </div>
 
+      {/* Selector de plantilla de invitación */}
+      <div>
+        <p className="text-sm text-[#9CA3AF] mb-3">
+          Plantilla de invitación digital
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {(Object.entries(TEMPLATES) as [InvitationTemplate, typeof TEMPLATES[InvitationTemplate]][]).map(([key, tmpl]) => {
+            const isSelected = selectedTemplate === key
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setSelectedTemplate(key)}
+                className="flex items-start gap-3 p-3.5 rounded-xl text-left transition-all"
+                style={{
+                  backgroundColor: isSelected ? '#1E1C14' : '#1A1A1A',
+                  border: isSelected ? '1px solid rgba(201,168,76,0.55)' : '1px solid #2A2A2A',
+                  boxShadow: isSelected ? '0 0 0 1px rgba(201,168,76,0.15)' : 'none',
+                }}
+              >
+                {/* Color preview swatch */}
+                <div className="flex-shrink-0 flex gap-0.5 mt-0.5">
+                  {tmpl.previewColors.map((color, i) => (
+                    <div
+                      key={i}
+                      className="rounded-sm"
+                      style={{
+                        width: i === 0 ? 14 : 8,
+                        height: 28,
+                        backgroundColor: color,
+                        opacity: i === 0 ? 1 : 0.7,
+                      }}
+                    />
+                  ))}
+                </div>
+                {/* Info */}
+                <div className="min-w-0">
+                  <p
+                    className="text-sm font-medium leading-tight mb-0.5"
+                    style={{ color: isSelected ? '#C9A84C' : '#FFFFFF' }}
+                  >
+                    {tmpl.label}
+                  </p>
+                  <p className="text-[11px] leading-snug" style={{ color: '#6B7280' }}>
+                    {tmpl.description}
+                  </p>
+                </div>
+                {/* Check */}
+                {isSelected && (
+                  <div className="flex-shrink-0 ml-auto">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(201,168,76,0.20)', border: '1px solid rgba(201,168,76,0.5)' }}
+                    >
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4l3 3 5-6" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* PIN del venue (solo lectura si ya existe) */}
       {evento?.pin_venue && (
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl px-4 py-3">
@@ -263,7 +334,7 @@ export function EventoConfigForm({ evento, parejaId, nombre1, nombre2 }: EventoC
       {evento?.slug && (
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl px-4 py-3">
           <p className="text-[#9CA3AF] text-xs mb-1">URL del evento</p>
-          <p className="text-white text-sm font-mono">/i/{evento.slug}/...</p>
+          <p className="text-white text-sm font-mono">/evento/{evento.slug}</p>
         </div>
       )}
 

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { confirmarRSVP } from '@/lib/rsvp'
+import { sendRsvpConfirmacionEmail, formatFechaLegible } from '@/lib/email'
 
 interface ConfirmarBody {
   token: string
@@ -29,82 +31,57 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminClient()
 
-  // Buscar invitado por token
-  const { data: invitado, error: invitadoError } = await admin
-    .from('invitados')
-    .select('*')
-    .eq('token', token)
-    .is('deleted_at', null)
-    .single()
-
-  if (invitadoError || !invitado) {
-    return NextResponse.json(
-      { success: false, error: 'Token inválido o invitado no encontrado' },
-      { status: 404 }
-    )
-  }
-
-  // Buscar evento
-  const { data: evento, error: eventoError } = await admin
-    .from('eventos')
-    .select('*')
-    .eq('id', invitado.evento_id)
-    .single()
-
-  if (eventoError || !evento) {
-    return NextResponse.json(
-      { success: false, error: 'Evento no encontrado' },
-      { status: 404 }
-    )
-  }
-
-  // Crear registro en confirmaciones
-  const { error: confirmError } = await admin.from('confirmaciones').insert({
-    invitado_id: invitado.id,
-    evento_id: evento.id,
+  const result = await confirmarRSVP(admin, {
+    token,
     asiste,
-    opcion_menu: opcion_menu ?? null,
-    lleva_acompanante: lleva_acompanante ?? false,
+    opcion_menu,
+    lleva_acompanante,
+    pendiente_decision,
   })
 
-  if (confirmError) {
-    // Si ya existe una confirmación (unique constraint) igual devolvemos success
-    if (!confirmError.message.includes('duplicate') && !confirmError.message.includes('unique')) {
-      return NextResponse.json(
-        { success: false, error: 'Error al registrar confirmación' },
-        { status: 500 }
-      )
-    }
-  }
-
-  // Determinar nuevo estado de confirmación
-  let nuevoEstado: 'confirmado' | 'rechazo' | 'pendiente_decision'
-  if (pendiente_decision) {
-    nuevoEstado = 'pendiente_decision'
-  } else if (asiste) {
-    nuevoEstado = 'confirmado'
-  } else {
-    nuevoEstado = 'rechazo'
-  }
-
-  // Actualizar estado del invitado
-  const { data: invitadoActualizado, error: updateError } = await admin
-    .from('invitados')
-    .update({ estado_confirmacion: nuevoEstado })
-    .eq('id', invitado.id)
-    .select('*')
-    .single()
-
-  if (updateError) {
+  if (!result.success) {
     return NextResponse.json(
-      { success: false, error: 'Error al actualizar estado del invitado' },
-      { status: 500 }
+      { success: false, error: result.error },
+      { status: result.status }
     )
+  }
+
+  // ── Enviar email de confirmación si el invitado tiene email y asiste ────────
+  // El email es un side effect — no bloquea el response ante fallos.
+  if (asiste && !pendiente_decision) {
+    // Recuperar el email del invitado (no viene en el select de confirmarRSVP)
+    const { data: invitadoConEmail } = await admin
+      .from('invitados')
+      .select('email, evento_id')
+      .eq('id', result.invitado.id)
+      .single()
+
+    if (invitadoConEmail?.email) {
+      // Recuperar la fecha del evento para el email
+      const { data: eventoCompleto } = await admin
+        .from('eventos')
+        .select('nombre_evento, fecha_evento, hora_evento')
+        .eq('id', invitadoConEmail.evento_id)
+        .single()
+
+      if (eventoCompleto) {
+        void sendRsvpConfirmacionEmail({
+          invitadoNombre: result.invitado.nombre,
+          invitadoEmail: invitadoConEmail.email,
+          eventoNombre: eventoCompleto.nombre_evento,
+          fechaEvento: formatFechaLegible(
+            eventoCompleto.fecha_evento,
+            eventoCompleto.hora_evento
+          ),
+          qrUrl: result.invitado.qr_url,
+        })
+      }
+    }
   }
 
   return NextResponse.json({
     success: true,
-    invitado: invitadoActualizado,
-    evento,
+    invitado: result.invitado,
+    evento: result.evento,
   })
 }

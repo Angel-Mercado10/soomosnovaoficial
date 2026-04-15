@@ -1,22 +1,27 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import InvitacionContent from '@/components/invitado/InvitacionContent'
+import { InvitacionTemplate } from '@/components/invitado/templates'
+import { SITE_CONFIG } from '@/lib/constants'
 
 interface PageProps {
   params: Promise<{ token: string }>
 }
 
-async function marcarVista(invitadoId: string) {
+async function marcarVista(invitadoId: string, estadoActual: string) {
   try {
     const admin = createAdminClient()
-    await admin
-      .from('invitados')
-      .update({ estado_confirmacion: 'pendiente' })
-      .eq('id', invitadoId)
-      .eq('estado_confirmacion', 'pendiente')
+    // Solo actualiza si el invitado aún no ha interactuado (estado pendiente)
+    // Registramos el acceso actualizando enviado_at como proxy de "visto"
+    if (estadoActual === 'pendiente') {
+      await admin
+        .from('invitados')
+        .update({ estado_envio: 'enviado' })
+        .eq('id', invitadoId)
+        .eq('estado_envio', 'pendiente_envio')
+    }
   } catch {
-    // No crítico
+    // No crítico — tracking de vista, no bloquea la experiencia
   }
 }
 
@@ -52,7 +57,7 @@ export default async function InvitacionPage({ params }: PageProps) {
 
   const { data: invitado } = await admin
     .from('invitados')
-    .select('*')
+    .select('id, nombre, token, evento_id, qr_url, estado_confirmacion, estado_envio')
     .eq('token', token)
     .is('deleted_at', null)
     .single()
@@ -69,7 +74,7 @@ export default async function InvitacionPage({ params }: PageProps) {
           Si creés que es un error, contactanos.
         </p>
         <a
-          href="https://wa.me/5491100000000?text=Hola%2C+tengo+un+problema+con+mi+invitaci%C3%B3n+de+SoomosNova"
+          href={`${SITE_CONFIG.whatsappUrl}?text=Hola%2C+tengo+un+problema+con+mi+invitaci%C3%B3n+de+SoomosNova`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
@@ -82,7 +87,7 @@ export default async function InvitacionPage({ params }: PageProps) {
 
   const { data: evento } = await admin
     .from('eventos')
-    .select('*')
+    .select('id, nombre_evento, fecha_evento, hora_evento, lugar_nombre, lugar_direccion, lugar_maps_url, dress_code, slug, template, pareja_id')
     .eq('id', invitado.evento_id)
     .single()
 
@@ -94,14 +99,14 @@ export default async function InvitacionPage({ params }: PageProps) {
     .eq('id', evento.pareja_id)
     .single()
 
-  void marcarVista(invitado.id)
+  void marcarVista(invitado.id, invitado.estado_confirmacion)
 
   const parejaNombres = pareja
     ? `${pareja.nombre_1} & ${pareja.nombre_2}`
     : evento.nombre_evento
 
   return (
-    <InvitacionContent
+    <InvitacionTemplate
       invitado={invitado}
       evento={evento}
       parejaNombres={parejaNombres}

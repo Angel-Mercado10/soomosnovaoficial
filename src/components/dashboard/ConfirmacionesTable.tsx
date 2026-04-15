@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import type { Confirmacion, Invitado } from '@/types/database'
 
 type FiltroAsiste = 'todos' | 'confirmados' | 'rechazos'
@@ -11,6 +12,8 @@ interface ConfirmacionConInvitado extends Confirmacion {
 
 interface ConfirmacionesTableProps {
   confirmaciones: ConfirmacionConInvitado[]
+  /** evento_id para la suscripción Realtime */
+  eventoId: string
 }
 
 const FILTROS: { value: FiltroAsiste; label: string }[] = [
@@ -19,8 +22,81 @@ const FILTROS: { value: FiltroAsiste; label: string }[] = [
   { value: 'rechazos', label: 'Rechazos' },
 ]
 
-export function ConfirmacionesTable({ confirmaciones }: ConfirmacionesTableProps) {
+export function ConfirmacionesTable({ confirmaciones: initialConfirmaciones, eventoId }: ConfirmacionesTableProps) {
+  const [confirmaciones, setConfirmaciones] = useState<ConfirmacionConInvitado[]>(initialConfirmaciones)
   const [filtro, setFiltro] = useState<FiltroAsiste>('todos')
+
+  // ── Realtime: suscribirse a cambios en confirmaciones e invitados ────────────
+  useEffect(() => {
+    const supabase = createClient()
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+    const fetchConfirmaciones = async () => {
+      // Obtener confirmaciones del evento
+      const { data: rawConf } = await supabase
+        .from('confirmaciones')
+        .select('*')
+        .eq('evento_id', eventoId)
+        .order('confirmed_at', { ascending: false })
+
+      const confirmacionesBase = rawConf ?? []
+
+      // Obtener invitados para esas confirmaciones
+      const invitadoIds = [...new Set(confirmacionesBase.map((c) => c.invitado_id))]
+
+      const { data: invitadosData } = invitadoIds.length > 0
+        ? await supabase
+            .from('invitados')
+            .select('id, nombre, email, telefono')
+            .in('id', invitadoIds)
+        : { data: [] }
+
+      const invitadosMap = new Map(
+        (invitadosData ?? []).map((i) => [
+          i.id,
+          { nombre: i.nombre, email: i.email, telefono: i.telefono },
+        ])
+      )
+
+      const actualizadas: ConfirmacionConInvitado[] = confirmacionesBase.map((c) => ({
+        ...c,
+        invitado: invitadosMap.get(c.invitado_id) ?? {
+          nombre: 'Desconocido',
+          email: null,
+          telefono: null,
+        },
+      }))
+
+      setConfirmaciones(actualizadas)
+    }
+
+    const debouncedFetch = () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(fetchConfirmaciones, 500)
+    }
+
+    // Canal Realtime para cambios en confirmaciones del evento
+    const channel = supabase
+      .channel(`confirmaciones-table-${eventoId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'confirmaciones',
+          filter: `evento_id=eq.${eventoId}`,
+        },
+        () => {
+          debouncedFetch()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      if (debounceTimer) clearTimeout(debounceTimer)
+      supabase.removeChannel(channel)
+    }
+  }, [eventoId])
 
   const filtradas = confirmaciones.filter((c) => {
     if (filtro === 'confirmados') return c.asiste === true

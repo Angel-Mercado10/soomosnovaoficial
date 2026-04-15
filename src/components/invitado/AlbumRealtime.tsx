@@ -6,9 +6,10 @@ import type { Foto } from '@/types/database'
 
 interface AlbumRealtimeProps {
   eventoId: string
+  onNuevaFoto: React.Dispatch<React.SetStateAction<Foto[]>>
 }
 
-export default function AlbumRealtime({ eventoId }: AlbumRealtimeProps) {
+export default function AlbumRealtime({ eventoId, onNuevaFoto }: AlbumRealtimeProps) {
   useEffect(() => {
     const supabase = createClient()
 
@@ -24,15 +25,11 @@ export default function AlbumRealtime({ eventoId }: AlbumRealtimeProps) {
         },
         (payload) => {
           const nuevaFoto = payload.new as Foto
-          // Si la foto no está oculta, la agrega a la galería
           if (!nuevaFoto.oculto) {
-            const setter = window.__albumSetFotos
-            if (typeof setter === 'function') {
-              setter((prev: Foto[]) => {
-                const yaExiste = prev.some((f) => f.id === nuevaFoto.id)
-                return yaExiste ? prev : [nuevaFoto, ...prev]
-              })
-            }
+            onNuevaFoto((prev) => {
+              const yaExiste = prev.some((f) => f.id === nuevaFoto.id)
+              return yaExiste ? prev : [nuevaFoto, ...prev]
+            })
           }
         }
       )
@@ -41,7 +38,7 @@ export default function AlbumRealtime({ eventoId }: AlbumRealtimeProps) {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [eventoId])
+  }, [eventoId, onNuevaFoto])
 
   return null
 }

@@ -2,7 +2,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import AlbumGaleria from '@/components/invitado/AlbumGaleria'
-import AlbumRealtime from '@/components/invitado/AlbumRealtime'
 import SubirFotoForm from '@/components/invitado/SubirFotoForm'
 
 interface PageProps {
@@ -65,7 +64,7 @@ export default async function AlbumPage({ params, searchParams }: PageProps) {
 
   const { data: fotos } = await admin
     .from('fotos')
-    .select('*')
+    .select('id, url_original, url_thumbnail, tipo, evento_id, invitado_id, oculto, subido_at')
     .eq('evento_id', evento.id)
     .eq('oculto', false)
     .order('subido_at', { ascending: false })
@@ -98,9 +97,7 @@ export default async function AlbumPage({ params, searchParams }: PageProps) {
         <AlbumGaleria
           fotosIniciales={fotosIniciales}
           eventoId={evento.id}
-          eventoSlug={slug}
         />
-        <AlbumRealtime eventoId={evento.id} />
       </main>
 
       <div className="text-center py-8 text-[#9CA3AF]/30 text-xs">

@@ -60,15 +60,45 @@ export function RegistroForm() {
       })
 
       if (signUpError) {
-        setError(signUpError.message)
+        const mensajes: Record<string, string> = {
+          'User already registered': 'Ya existe una cuenta con ese email.',
+          'Email rate limit exceeded': 'Demasiados intentos. Esperá unos minutos.',
+          'Password should be at least 6 characters': 'La contraseña debe tener al menos 8 caracteres.',
+        }
+        setError(mensajes[signUpError.message] ?? 'Error al crear la cuenta. Intentá de nuevo.')
         return
       }
 
       if (data.user) {
-        // El trigger on_auth_user_created crea el registro en `parejas` automáticamente.
-        // Si hay sesión activa (email confirmation deshabilitado) → dashboard
-        // Si no hay sesión (email confirmation habilitado) → verify-email
+        // Si hay sesión activa (email confirmation deshabilitado), crear la pareja
+        // como fallback explícito — no depender solo del trigger on_auth_user_created.
+        // Si el trigger ya la creó, el INSERT fallará por unique constraint y se ignora.
         if (data.session) {
+          try {
+            const { error: parejaError } = await supabase
+              .from('parejas')
+              .insert({
+                auth_user_id: data.user.id,
+                nombre_1: form.nombre1.trim(),
+                nombre_2: form.nombre2.trim(),
+                email: form.email.trim(),
+              })
+              .select('id')
+              .single()
+
+            // Si el error es duplicate (trigger ya creó la pareja), no es crítico
+            if (parejaError && parejaError.code !== '23505') {
+              // Error real al crear la pareja — informar al usuario
+              setError(
+                'Tu cuenta fue creada, pero hubo un error al guardar tu perfil. ' +
+                'Intentá iniciar sesión y completar el perfil desde el dashboard.'
+              )
+              return
+            }
+          } catch {
+            // Silencioso — el trigger pudo haberla creado correctamente
+          }
+
           router.push('/dashboard')
           router.refresh()
         } else {
