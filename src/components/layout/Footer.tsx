@@ -41,7 +41,9 @@ function FacebookIcon({ className }: { className?: string }) {
 
 export function Footer() {
   return (
-    <footer className="border-t border-nova-border bg-nova-black px-6 py-12">
+    <footer className="relative border-t border-nova-border bg-nova-black px-6 py-14">
+      {/* Gold accent on top border */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-nova-gold/30 to-transparent" />
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {/* Brand */}

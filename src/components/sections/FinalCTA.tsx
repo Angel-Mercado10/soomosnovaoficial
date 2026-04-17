@@ -6,36 +6,54 @@ import { SITE_CONFIG } from '@/lib/constants'
 
 export function FinalCTA() {
   return (
-    <section id="contacto" className="px-6 py-24">
-      <div className="mx-auto max-w-2xl text-center">
+    <section id="contacto" className="relative px-6 py-28 overflow-hidden">
+      {/* Atmospheric gold pulse */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-nova-gold/[0.05] blur-[100px]" />
+
+      <div className="relative mx-auto max-w-2xl text-center">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
         >
-          <span className="text-xs font-semibold tracking-widest text-nova-gold uppercase">
-            ACCIÓN FINAL
-          </span>
-          <h2 className="mt-3 font-cormorant text-4xl font-semibold text-white md:text-5xl">
-            Una sola conversación puede cambiarlo todo.
+          <span className="section-label">Empezá hoy</span>
+          <h2 className="mt-4 font-cormorant text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-6xl">
+            Una sola conversación<br className="hidden md:block" /> puede cambiarlo todo.
           </h2>
-          <p className="mt-4 text-base text-nova-gray leading-relaxed">
-            Escríbenos por WhatsApp y te mostramos cómo elevar la gestión de invitados con una
-            experiencia verdaderamente premium.
+          <p className="mt-5 text-[1.0625rem] text-nova-gray leading-[1.7] max-w-lg mx-auto">
+            Escribinos por WhatsApp y te mostramos cómo elevar la experiencia de invitados
+            con un sistema verdaderamente premium.
           </p>
 
-          <div className="mt-8">
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button
               as="a"
               href={SITE_CONFIG.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               variant="primary"
-              className="px-8 py-4"
+              size="lg"
             >
               Chatea por WhatsApp
             </Button>
+            <Button
+              as="a"
+              href={SITE_CONFIG.calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="secondary"
+              size="lg"
+            >
+              Agenda una demo
+            </Button>
+          </div>
+
+          {/* Divider ornament */}
+          <div className="mt-14 ornament-line">
+            <span className="text-[0.6rem] tracking-[0.3em] text-white/20 uppercase font-medium">
+              SoomosNova · Bodas premium en México
+            </span>
           </div>
         </motion.div>
       </div>

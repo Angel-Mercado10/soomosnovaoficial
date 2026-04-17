@@ -53,7 +53,7 @@ export default function RootLayout({
       lang="es-MX"
       className={`${geistSans.variable} ${cormorantGaramond.variable}`}
     >
-      <body className="min-h-screen bg-nova-black text-nova-white antialiased">
+      <body className="min-h-screen bg-nova-black text-nova-white antialiased grain-overlay">
         <ToastProvider>
           {children}
         </ToastProvider>
