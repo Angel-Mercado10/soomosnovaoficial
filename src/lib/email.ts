@@ -37,8 +37,15 @@ export async function sendRsvpConfirmacionEmail(
 ): Promise<void> {
   const { invitadoNombre, invitadoEmail, eventoNombre, fechaEvento, qrUrl } = input
 
+  if (process.env.NODE_ENV === 'production' && !process.env.RESEND_FROM_EMAIL) {
+    throw new Error(
+      '[sendRsvpConfirmacionEmail] RESEND_FROM_EMAIL no está definida en producción. ' +
+      'Configurá la variable de entorno para evitar emails con remitente de prueba.'
+    )
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'noreply@soomosnova.com'
 
   const qrSection = qrUrl
     ? `
@@ -136,5 +143,91 @@ export async function sendRsvpConfirmacionEmail(
   } catch (err) {
     // No bloquear el flujo RSVP por fallo de email
     console.error('[sendRsvpConfirmacionEmail] Error al enviar email de confirmación:', err)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface NotificacionParejaEmailInput {
+  /** Email de la pareja (destinatario) */
+  parejaEmail: string
+  /** Nombre del invitado que confirmó */
+  invitadoNombre: string
+  /** Si el invitado va a asistir */
+  asiste: boolean
+  /** Nombre del evento */
+  eventoNombre: string
+}
+
+/**
+ * Notifica a la pareja cuando un invitado confirma o rechaza asistencia.
+ * Side effect no crítico — no bloquea el flujo RSVP ante fallos.
+ */
+export async function sendNotificacionParejaEmail({
+  parejaEmail,
+  invitadoNombre,
+  asiste,
+  eventoNombre,
+}: NotificacionParejaEmailInput): Promise<void> {
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'noreply@soomosnova.com'
+
+  const accion = asiste ? 'confirmado su asistencia' : 'indicado que no podrá asistir'
+  const accentColor = asiste ? '#C9A84C' : '#9CA3AF'
+  const iconPath = asiste
+    ? '<polyline points="20 6 9 17 4 12" />'
+    : '<line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />'
+
+  const html = `
+    <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; background: #0A0A0A; color: #ffffff; padding: 40px 32px; border-radius: 16px;">
+
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 32px;">
+        <span style="font-size: 22px; font-weight: 600; color: #ffffff;">Soomos</span>
+        <span style="font-size: 22px; font-weight: 600; color: #C9A84C;">Nova</span>
+      </div>
+
+      <!-- Ornamento -->
+      <div style="text-align: center; color: #C9A84C; font-size: 18px; margin-bottom: 24px;">✦</div>
+
+      <!-- Ícono -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="display: inline-flex; width: 56px; height: 56px; border-radius: 50%; background: ${accentColor}1A; border: 1px solid ${accentColor}4D; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${accentColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            ${iconPath}
+          </svg>
+        </div>
+      </div>
+
+      <!-- Título -->
+      <h1 style="font-size: 24px; font-weight: 400; text-align: center; color: #ffffff; margin: 0 0 12px; line-height: 1.3;">
+        Nueva confirmación en <span style="color: #C9A84C;">${eventoNombre}</span>
+      </h1>
+
+      <!-- Mensaje principal -->
+      <p style="text-align: center; color: #D1D5DB; font-size: 15px; margin: 0 0 32px; line-height: 1.6;">
+        <strong style="color: #ffffff;">${invitadoNombre}</strong> ha ${accion}.
+      </p>
+
+      <!-- Separador -->
+      <div style="border-top: 1px solid #2A2A2A; margin: 0 0 28px;"></div>
+
+      <!-- Footer -->
+      <div style="text-align: center; color: #4A4A4A; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;">
+        SoomosNova
+      </div>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: parejaEmail,
+      subject: `[${eventoNombre}] — Nueva confirmación de ${invitadoNombre}`,
+      html,
+    })
+  } catch (err) {
+    // No crítico — no bloquear el flujo RSVP
+    console.error('[sendNotificacionParejaEmail] Error al notificar a la pareja:', err)
   }
 }

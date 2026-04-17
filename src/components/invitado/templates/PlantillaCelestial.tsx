@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { EnvelopeAnimation, type EnvelopeTheme } from './EnvelopeAnimation'
 import { formatFechaEvento, staggerVariants, itemVariants, type InvitationTemplateProps } from './types'
 import { InvitacionCTA } from './InvitacionCTA'
+import CountdownEvento from '@/components/invitado/CountdownEvento'
 
 const theme: EnvelopeTheme = {
   bg: '#060814',
@@ -150,7 +151,16 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
         className="min-h-screen flex flex-col items-center px-6 pt-12 pb-16 relative overflow-hidden"
         style={{ backgroundColor: '#060814' }}
       >
-        {/* Ambient glow background */}
+        {/* Gradiente radial pronunciado en la parte superior */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse at center, rgba(26,26,78,0.30) 0%, transparent 70%)`,
+            filter: 'blur(60px)',
+          }}
+        />
+
+        {/* Ambient glow secundario */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full pointer-events-none"
           style={{
@@ -159,59 +169,87 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
           }}
         />
 
-        {/* Star field top */}
-        <motion.div variants={itemVariants} className="relative w-full max-w-[280px] h-20 mb-2">
+        {/* Estrella fugaz */}
+        <motion.div
+          className="absolute top-16 left-10 w-32 h-px pointer-events-none"
+          style={{
+            background: `linear-gradient(to right, transparent, ${silver}80, transparent)`,
+            transformOrigin: 'left center',
+            rotate: '20deg',
+          }}
+          animate={{ x: [0, 200], y: [0, 100], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 7, ease: 'easeOut' }}
+        />
+
+        {/* HERO — Star field top */}
+        <motion.div variants={itemVariants} className="relative w-full max-w-[280px] h-20 mb-2 z-10">
           <StarField />
         </motion.div>
 
-        {/* Moon + title — crescent with crater detail (CRITICAL 7) */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center mb-5">
+        {/* Moon + frase temática */}
+        <motion.div variants={itemVariants} className="flex flex-col items-center mb-5 relative z-10">
           <div className="mb-2">
             <CrescentMoon color={silver} />
           </div>
           <p
-            className="font-cormorant text-[11px] uppercase tracking-[0.35em]"
-            style={{ color: dimPale }}
+            className="font-cormorant italic text-[12px] tracking-[0.18em] text-center max-w-[240px]"
+            style={{ color: `${dimPale}90` }}
           >
-            bajo el cielo de
+            Bajo el mismo cielo, encontramos el camino de vuelta el uno al otro.
           </p>
         </motion.div>
 
-        {/* Couple names — MEDIUM 25: text-4xl sm:text-5xl */}
+        {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-4xl sm:text-5xl text-center leading-tight mb-3"
-          style={{ color: pale, textShadow: `0 0 40px ${silver}40` }}
+          className="font-cormorant text-6xl md:text-8xl text-center leading-none tracking-[0.15em] mb-6 relative z-10"
+          style={{ color: pale, textShadow: `0 0 60px ${silver}40` }}
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* Guest line */}
+        {/* SALUDO PERSONAL */}
         <motion.p
           variants={itemVariants}
-          className="text-[13px] text-center mb-7"
-          style={{ color: dimPale }}
+          className="font-cormorant italic text-xl text-center mb-2 relative z-10"
+          style={{ color: `${dimPale}90` }}
         >
-          invitan a{' '}
-          <span
-            className="font-cormorant text-[17px]"
-            style={{ color: silver }}
-          >
-            {invitado.nombre}
-          </span>
+          el universo nos dio una razón para reunirnos contigo,
+        </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-3xl text-center mb-8 relative z-10"
+          style={{
+            color: silver,
+            filter: 'drop-shadow(0 0 8px rgba(168,184,232,0.40))',
+          }}
+        >
+          {invitado.nombre}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="mb-7">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
           <MoonDivider color={silver} />
         </motion.div>
 
-        {/* Date */}
-        <motion.div variants={itemVariants} className="text-center mb-5">
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-2"
-            style={{ color: `${dimPale}80` }}
-          >
-            noche de celebración
+        {/* COUNTDOWN */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
+          <CountdownEvento
+            fechaEvento={evento.fecha_evento}
+            horaEvento={evento.hora_evento}
+          />
+        </motion.div>
+
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <MoonDivider color={silver} />
+        </motion.div>
+
+        {/* DETALLES — cada uno con bullet ✦ o ☽ */}
+        {/* Fecha */}
+        <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
+          <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimPale}80` }}>
+            ✦ noche de celebración
           </p>
           <p className="font-cormorant text-xl text-center" style={{ color: pale }}>
             {formatFechaEvento(evento.fecha_evento, evento.hora_evento)}
@@ -220,12 +258,9 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
 
         {/* Venue */}
         {evento.lugar_nombre && (
-          <motion.div variants={itemVariants} className="text-center mb-6">
-            <p
-              className="text-[9px] uppercase tracking-[0.3em] mb-2"
-              style={{ color: `${dimPale}80` }}
-            >
-              lugar
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
+            <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimPale}80` }}>
+              ☽ lugar
             </p>
             {evento.lugar_maps_url ? (
               <a
@@ -243,7 +278,7 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
                 )}
               </a>
             ) : (
-          <p className="font-cormorant text-xl sm:text-2xl text-center" style={{ color: pale }}>
+              <p className="font-cormorant text-xl text-center" style={{ color: pale }}>
                 {evento.lugar_nombre}
                 {evento.lugar_direccion && (
                   <span className="block text-[13px] mt-0.5" style={{ color: dimPale }}>
@@ -257,49 +292,59 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
 
         {/* Dress code */}
         {evento.dress_code && (
-          <motion.div variants={itemVariants} className="text-center mb-6">
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimPale}80` }}>
-              etiqueta
+              ✦ etiqueta
             </p>
             <p className="font-cormorant text-lg" style={{ color: pale }}>{evento.dress_code}</p>
           </motion.div>
         )}
 
-        <motion.div variants={itemVariants} className="mb-6">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
           <MoonDivider color={silver} />
         </motion.div>
 
-        {/* QR */}
+        {/* QR — frame oscuro con glow celestial */}
         {invitado.qr_url && (
-          <motion.div variants={itemVariants} className="mb-3">
+          <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
+            <p className="font-cormorant text-2xl text-center mb-4" style={{ color: pale }}>
+              Tu pase de entrada
+            </p>
             <div
-              className="p-4 rounded-xl shadow-2xl"
+              className="rounded-2xl p-4"
               style={{
-                backgroundColor: '#F0F4FF',
-                boxShadow: `0 8px 40px ${glow}, 0 4px 16px rgba(0,0,0,0.4)`,
+                backgroundColor: '#0D1428',
+                border: `1px solid rgba(168,184,232,0.30)`,
+                boxShadow: `0 0 30px rgba(168,184,232,0.20), 0 0 60px rgba(99,102,241,0.10)`,
               }}
             >
-              <Image
-                src={invitado.qr_url}
-                alt={`Código QR de ${invitado.nombre}`}
-                width={168}
-                height={168}
-                className="block"
-                priority
-              />
+              <div
+                className="rounded-xl overflow-hidden"
+                style={{ border: `1px solid rgba(168,184,232,0.15)` }}
+              >
+                <Image
+                  src={invitado.qr_url}
+                  alt={`Código QR de ${invitado.nombre}`}
+                  width={168}
+                  height={168}
+                  className="block"
+                  priority
+                />
+              </div>
             </div>
           </motion.div>
         )}
         <motion.p
           variants={itemVariants}
-          className="text-[10px] text-center uppercase tracking-widest mb-10"
+          className="text-[10px] text-center uppercase tracking-widest mb-10 relative z-10"
           style={{ color: `${dimPale}50` }}
         >
-          tu pase de entrada
+          presentar en la entrada del evento
         </motion.p>
 
-        {/* CTA — HIGH 18 CELESTIAL: soft glow button, rounded, subtle star sparkle */}
-        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px]">
+        {/* CTA */}
+        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px] relative z-10">
           <InvitacionCTA
             token={invitado.token}
             eventoSlug={evento.slug}
@@ -337,11 +382,14 @@ export function PlantillaCelestial({ invitado, evento, parejaNombres }: Invitati
           />
         </motion.div>
 
-        {/* Footer stars */}
-        <motion.div variants={itemVariants} className="mt-12 flex items-center gap-3">
-          <div className="w-1 h-1 rounded-full" style={{ backgroundColor: `${silver}40` }} />
-          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: `${silver}60` }} />
-          <div className="w-1 h-1 rounded-full" style={{ backgroundColor: `${silver}40` }} />
+        {/* FOOTER */}
+        <motion.div variants={itemVariants} className="mt-12 flex flex-col items-center gap-2 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-1 rounded-full" style={{ backgroundColor: `${silver}40` }} />
+            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: `${silver}60` }} />
+            <div className="w-1 h-1 rounded-full" style={{ backgroundColor: `${silver}40` }} />
+          </div>
+          <p className="text-[9px] uppercase tracking-widest" style={{ color: `${dimPale}30` }}>SoomosNova</p>
         </motion.div>
       </motion.div>
     </EnvelopeAnimation>

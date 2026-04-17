@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { EnvelopeAnimation, type EnvelopeTheme } from './EnvelopeAnimation'
 import { formatFechaEvento, staggerVariants, itemVariants, type InvitationTemplateProps } from './types'
 import { InvitacionCTA } from './InvitacionCTA'
+import CountdownEvento from '@/components/invitado/CountdownEvento'
 
 const theme: EnvelopeTheme = {
   bg: '#0C0608',
@@ -113,6 +114,15 @@ function FloralHeader() {
   )
 }
 
+// Pétalos de rosa caídos — 5 con posiciones y animaciones diferentes
+const PETALS = [
+  { left: '8%',  delay: 0,  driftX: [0, 18, -8],  rotate: [0, 120, 240] },
+  { left: '25%', delay: 2,  driftX: [0, -20, 10],  rotate: [0, -90, -200] },
+  { left: '55%', delay: 4,  driftX: [0, 14, -6],   rotate: [0, 200, 360] },
+  { left: '72%', delay: 6,  driftX: [0, -16, 8],   rotate: [0, -150, -300] },
+  { left: '88%', delay: 8,  driftX: [0, 22, -12],  rotate: [0, 80, 180] },
+]
+
 export function PlantillaRomantica({ invitado, evento, parejaNombres }: InvitationTemplateProps) {
   const rose = '#C97A9A'
   const blush = '#FFE0EA'
@@ -124,7 +134,7 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        className="min-h-screen flex flex-col items-center px-6 pt-10 pb-16 relative"
+        className="min-h-screen flex flex-col items-center px-6 pt-10 pb-16 relative overflow-hidden"
         style={{ backgroundColor: '#0C0608' }}
       >
         {/* Ambient glow */}
@@ -136,49 +146,101 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
           }}
         />
 
-        {/* Floral header */}
-        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+        {/* Pétalos de rosa caídos */}
+        {PETALS.map((petal, i) => (
+          <motion.div
+            key={i}
+            className="absolute top-0 pointer-events-none"
+            style={{
+              left: petal.left,
+              width: '12px',
+              height: '18px',
+              borderRadius: '50% 10% 50% 10%',
+              backgroundColor: '#C97A9A15',
+            }}
+            animate={{
+              y: [0, '100vh'],
+              x: petal.driftX,
+              opacity: [0, 0.6, 0],
+              rotate: petal.rotate,
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatDelay: petal.delay,
+              ease: 'easeIn',
+              delay: petal.delay,
+            }}
+          />
+        ))}
+
+        {/* HERO — FloralHeader con efecto respiración */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-4 relative z-10"
+          animate={{ scale: [1, 1.02, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        >
           <FloralHeader />
         </motion.div>
 
-        {/* Tagline */}
+        {/* Frase temática */}
         <motion.p
           variants={itemVariants}
-          className="font-cormorant italic text-[13px] tracking-wider mb-3 relative z-10"
-          style={{ color: dimBlush }}
+          className="font-cormorant italic text-[13px] tracking-wider mb-3 relative z-10 text-center"
+          style={{ color: `${dimBlush}90` }}
         >
-          con todo el amor del mundo
+          Donde el amor escribe la historia más bella.
         </motion.p>
 
-        {/* Couple names — MEDIUM 25: text-4xl sm:text-5xl */}
+        {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-4xl sm:text-5xl italic text-center leading-tight mb-3 relative z-10"
+          className="font-cormorant text-6xl md:text-8xl italic text-center leading-none tracking-[0.15em] mb-6 relative z-10"
           style={{ color: blush, textShadow: `0 0 48px rgba(200,100,140,0.30)` }}
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* Guest */}
+        {/* SALUDO PERSONAL */}
         <motion.p
           variants={itemVariants}
-          className="text-[13px] text-center mb-7 relative z-10"
-          style={{ color: dimBlush }}
+          className="font-cormorant italic text-xl text-center mb-2 relative z-10"
+          style={{ color: `${dimBlush}90` }}
         >
-          con gran alegría invitan a{' '}
-          <span className="font-cormorant text-[17px] not-italic" style={{ color: rose }}>
-            {invitado.nombre}
-          </span>
+          de todo corazón, queremos que seas parte de este momento,
+        </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant italic text-3xl text-center mb-8 relative z-10"
+          style={{ color: rose }}
+        >
+          {invitado.nombre}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="mb-7 relative z-10">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
           <RoseDivider color={rose} />
         </motion.div>
 
-        {/* Date */}
-        <motion.div variants={itemVariants} className="text-center mb-5 relative z-10">
-          <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}80` }}>
-            el día especial
+        {/* COUNTDOWN */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
+          <CountdownEvento
+            fechaEvento={evento.fecha_evento}
+            horaEvento={evento.hora_evento}
+          />
+        </motion.div>
+
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <RoseDivider color={rose} />
+        </motion.div>
+
+        {/* DETALLES — con bullet ♡ */}
+        {/* Fecha */}
+        <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
+          <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}70` }}>
+            ♡ el día especial
           </p>
           <p className="font-cormorant text-xl text-center" style={{ color: blush }}>
             {formatFechaEvento(evento.fecha_evento, evento.hora_evento)}
@@ -187,9 +249,9 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
 
         {/* Venue */}
         {evento.lugar_nombre && (
-          <motion.div variants={itemVariants} className="text-center mb-6 relative z-10">
-            <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}80` }}>
-              celebración
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
+            <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}70` }}>
+              ♡ celebración
             </p>
             {evento.lugar_maps_url ? (
               <a
@@ -207,7 +269,7 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
                 )}
               </a>
             ) : (
-          <p className="font-cormorant text-xl sm:text-2xl text-center" style={{ color: blush }}>
+              <p className="font-cormorant text-xl text-center" style={{ color: blush }}>
                 {evento.lugar_nombre}
                 {evento.lugar_direccion && (
                   <span className="block text-[13px] mt-0.5" style={{ color: dimBlush }}>
@@ -221,49 +283,65 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
 
         {/* Dress code */}
         {evento.dress_code && (
-          <motion.div variants={itemVariants} className="text-center mb-6 relative z-10">
-            <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}80` }}>
-              etiqueta
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
+            <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimBlush}70` }}>
+              ♡ etiqueta
             </p>
             <p className="font-cormorant text-lg" style={{ color: blush }}>{evento.dress_code}</p>
           </motion.div>
         )}
 
-        <motion.div variants={itemVariants} className="mb-6 relative z-10">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
           <RoseDivider color={rose} />
         </motion.div>
 
-        {/* QR */}
+        {/* QR — frame rosado con corazón decorativo encima */}
         {invitado.qr_url && (
-          <motion.div variants={itemVariants} className="mb-3 relative z-10">
-            <div
-              className="p-4 rounded-2xl"
-              style={{
-                backgroundColor: '#FFF0F5',
-                boxShadow: `0 8px 40px rgba(180,60,100,0.20), 0 4px 16px rgba(0,0,0,0.4)`,
-                border: `1px solid ${rose}20`,
-              }}
-            >
-              <Image
-                src={invitado.qr_url}
-                alt={`Código QR de ${invitado.nombre}`}
-                width={168}
-                height={168}
-                className="block"
-                priority
-              />
+          <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
+            <p className="font-cormorant text-2xl text-center mb-4" style={{ color: blush }}>
+              Tu pase de entrada
+            </p>
+            <div className="relative">
+              {/* Corazón SVG decorativo encima del QR */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                <svg width="28" height="26" viewBox="0 0 24 22" fill="none" aria-hidden="true">
+                  <path
+                    d="M12 21 C12 21 1 13 1 6.5 C1 3.42 3.42 1 6.5 1 C8.24 1 9.91 1.81 11 3.08 C12.09 1.81 13.76 1 15.5 1 C18.58 1 21 3.42 21 6.5 C21 13 12 21 12 21Z"
+                    fill={rose}
+                    opacity="0.75"
+                  />
+                </svg>
+              </div>
+              <div
+                className="rounded-3xl p-4"
+                style={{
+                  backgroundColor: '#FFF0F5',
+                  border: `2px solid rgba(201,122,154,0.30)`,
+                  boxShadow: `0 0 40px rgba(201,122,154,0.20), 0 4px 16px rgba(0,0,0,0.4)`,
+                }}
+              >
+                <Image
+                  src={invitado.qr_url}
+                  alt={`Código QR de ${invitado.nombre}`}
+                  width={168}
+                  height={168}
+                  className="block"
+                  priority
+                />
+              </div>
             </div>
           </motion.div>
         )}
         <motion.p
           variants={itemVariants}
-          className="text-[10px] text-center uppercase tracking-widest mb-10 relative z-10"
+          className="text-[10px] text-center uppercase tracking-widest mb-12 relative z-10"
           style={{ color: `${dimBlush}50` }}
         >
-          tu pase de entrada
+          presentar en la entrada del evento
         </motion.p>
 
-        {/* CTA — HIGH 18 ROMANTICA: rounded pill, heart icon, warm rose-gold gradient */}
+        {/* CTA */}
         <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px] relative z-10">
           <InvitacionCTA
             token={invitado.token}
@@ -304,8 +382,8 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
           />
         </motion.div>
 
-        {/* Footer */}
-        <motion.div variants={itemVariants} className="mt-12 relative z-10">
+        {/* FOOTER */}
+        <motion.div variants={itemVariants} className="mt-12 flex flex-col items-center gap-2 relative z-10">
           <svg width="24" height="22" viewBox="0 0 24 22" fill="none" aria-hidden="true">
             <path
               d="M12 21 C12 21 1 13 1 6.5 C1 3.42 3.42 1 6.5 1 C8.24 1 9.91 1.81 11 3.08 C12.09 1.81 13.76 1 15.5 1 C18.58 1 21 3.42 21 6.5 C21 13 12 21 12 21Z"
@@ -313,6 +391,7 @@ export function PlantillaRomantica({ invitado, evento, parejaNombres }: Invitati
               opacity="0.35"
             />
           </svg>
+          <p className="text-[9px] uppercase tracking-widest" style={{ color: `${dimBlush}30` }}>SoomosNova</p>
         </motion.div>
       </motion.div>
     </EnvelopeAnimation>

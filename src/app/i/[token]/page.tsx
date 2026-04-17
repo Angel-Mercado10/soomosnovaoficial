@@ -8,18 +8,14 @@ interface PageProps {
   params: Promise<{ token: string }>
 }
 
-async function marcarVista(invitadoId: string, estadoActual: string) {
+async function marcarVista(invitadoId: string) {
   try {
     const admin = createAdminClient()
-    // Solo actualiza si el invitado aún no ha interactuado (estado pendiente)
-    // Registramos el acceso actualizando enviado_at como proxy de "visto"
-    if (estadoActual === 'pendiente') {
-      await admin
-        .from('invitados')
-        .update({ estado_envio: 'enviado' })
-        .eq('id', invitadoId)
-        .eq('estado_envio', 'pendiente_envio')
-    }
+    await admin
+      .from('invitados')
+      .update({ vista_at: new Date().toISOString() })
+      .eq('id', invitadoId)
+      .is('vista_at', null)
   } catch {
     // No crítico — tracking de vista, no bloquea la experiencia
   }
@@ -99,7 +95,7 @@ export default async function InvitacionPage({ params }: PageProps) {
     .eq('id', evento.pareja_id)
     .single()
 
-  void marcarVista(invitado.id, invitado.estado_confirmacion)
+  void marcarVista(invitado.id)
 
   const parejaNombres = pareja
     ? `${pareja.nombre_1} & ${pareja.nombre_2}`

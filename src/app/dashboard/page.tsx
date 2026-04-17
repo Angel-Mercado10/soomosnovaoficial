@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardStats, NoEventoCTA } from '@/components/dashboard/DashboardStats'
 import { CompletarPerfilForm } from '@/components/dashboard/CompletarPerfilForm'
+import { BotonActivarEvento } from '@/components/dashboard/BotonActivarEvento'
+import { BotonEnviarInvitaciones } from '@/components/dashboard/BotonEnviarInvitaciones'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -35,11 +37,12 @@ export default async function DashboardPage() {
 
   // Estadísticas iniciales para SSR (evita flicker en Realtime)
   let initialStats = { total: 0, confirmados: 0, pendientes: 0, rechazos: 0 }
+  let invitadosPendientesEnvio = 0
 
   if (evento) {
     const { data: invitados } = await supabase
       .from('invitados')
-      .select('estado_confirmacion')
+      .select('estado_confirmacion, estado_envio')
       .eq('evento_id', evento.id)
       .is('deleted_at', null)
 
@@ -54,6 +57,9 @@ export default async function DashboardPage() {
         ).length,
         rechazos: invitados.filter((i) => i.estado_confirmacion === 'rechazo').length,
       }
+      invitadosPendientesEnvio = invitados.filter(
+        (i) => i.estado_envio === 'pendiente_envio'
+      ).length
     }
   }
 
@@ -76,6 +82,36 @@ export default async function DashboardPage() {
 
       {evento ? (
         <div className="space-y-6">
+          {/* Banner de activación — visible solo si el evento NO está pagado */}
+          {evento.estado_pago !== 'pagado' && (
+            <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-xl p-5">
+              <div className="flex items-start gap-4">
+                <div className="shrink-0 w-9 h-9 rounded-lg bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#C9A84C"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div>
+                    <p className="text-white text-sm font-medium">Tu evento no está activado</p>
+                    <p className="text-[#9CA3AF] text-xs mt-0.5">
+                      Completá el pago para poder enviar invitaciones a tus invitados.
+                    </p>
+                  </div>
+                  <BotonActivarEvento />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Info del evento */}
           <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-5">
             <div className="flex items-start justify-between gap-4">
@@ -107,6 +143,23 @@ export default async function DashboardPage() {
 
           {/* Stats con Realtime */}
           <DashboardStats eventoId={evento.id} initialStats={initialStats} />
+
+          {/* Envío de invitaciones — visible solo si el evento está pagado */}
+          {evento.estado_pago === 'pagado' && (
+            <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-white font-medium text-sm">Invitaciones por WhatsApp</h3>
+                  <p className="text-[#9CA3AF] text-xs mt-0.5">
+                    {invitadosPendientesEnvio > 0
+                      ? `${invitadosPendientesEnvio} invitado${invitadosPendientesEnvio !== 1 ? 's' : ''} pendiente${invitadosPendientesEnvio !== 1 ? 's' : ''} de envío`
+                      : 'Todas las invitaciones fueron enviadas'}
+                  </p>
+                </div>
+                <BotonEnviarInvitaciones pendientes={invitadosPendientesEnvio} />
+              </div>
+            </div>
+          )}
 
           {/* Acciones rápidas */}
           <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-5">

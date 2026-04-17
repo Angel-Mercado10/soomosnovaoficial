@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { EnvelopeAnimation, type EnvelopeTheme } from './EnvelopeAnimation'
 import { formatFechaEvento, staggerVariants, itemVariants, type InvitationTemplateProps } from './types'
 import { InvitacionCTA } from './InvitacionCTA'
+import CountdownEvento from '@/components/invitado/CountdownEvento'
 
 const theme: EnvelopeTheme = {
   bg: '#060C08',
@@ -109,6 +110,16 @@ function BotanicalHeader() {
   )
 }
 
+/** Pequeño ícono de hoja inline para los detalles */
+function LeafIcon({ color }: { color: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="inline-block mr-1.5 mb-0.5">
+      <path d="M7 12 C5 8 2 5 3 3 C5 1 9 3 10 6 C11 9 9 12 7 12Z" fill={color} opacity="0.70" />
+      <path d="M7 12 C7 9 6 6 3 3" stroke={color} strokeWidth="0.5" strokeOpacity="0.45" fill="none" />
+    </svg>
+  )
+}
+
 export function PlantillaBotanical({ invitado, evento, parejaNombres }: InvitationTemplateProps) {
   const sage = '#6B9E6B'
   const mint = '#D4EDD4'
@@ -123,7 +134,7 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
         className="min-h-screen flex flex-col items-center px-6 pt-10 pb-16 relative"
         style={{ backgroundColor: '#060C08' }}
       >
-        {/* Subtle texture overlay */}
+        {/* Texture overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -131,48 +142,84 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           }}
         />
 
-        {/* Botanical header illustration */}
-        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+        {/* BotanicalHeader como watermark absoluto — profundidad de fondo */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+          aria-hidden="true"
+          style={{ opacity: 0.04 }}
+        >
+          <div style={{ transform: 'scale(1.5)' }}>
+            <BotanicalHeader />
+          </div>
+        </div>
+
+        {/* HERO — BotanicalHeader animado con brisa suave */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-4 relative z-10"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
           <BotanicalHeader />
         </motion.div>
 
-        {/* Tag line */}
+        {/* Frase temática */}
         <motion.p
           variants={itemVariants}
-          className="font-cormorant text-[11px] uppercase tracking-[0.3em] mb-3 relative z-10"
+          className="font-cormorant italic text-[13px] tracking-wider text-center mb-3 relative z-10 max-w-[240px]"
           style={{ color: dimMint }}
         >
-          juntos en la naturaleza
+          Como la naturaleza misma, nuestro amor florece cada día.
         </motion.p>
 
-        {/* Couple names — MEDIUM 25: text-4xl sm:text-5xl */}
+        {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-4xl sm:text-5xl text-center leading-tight mb-3 relative z-10"
+          className="font-cormorant text-6xl md:text-8xl text-center leading-none tracking-[0.15em] mb-6 relative z-10"
           style={{ color: mint }}
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* Guest */}
+        {/* SALUDO PERSONAL */}
         <motion.p
           variants={itemVariants}
-          className="text-[13px] text-center mb-7 relative z-10"
-          style={{ color: dimMint }}
+          className="font-cormorant italic text-xl text-center mb-2 relative z-10"
+          style={{ color: `${dimMint}90` }}
         >
-          invitan a{' '}
-          <span className="font-cormorant text-[17px]" style={{ color: sage }}>
-            {invitado.nombre}
-          </span>
+          con gratitud y amor, queremos compartir este día contigo,
+        </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-3xl text-center mb-8 relative z-10"
+          style={{ color: sage }}
+        >
+          {invitado.nombre}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="mb-7 relative z-10">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
           <LeafDivider color={sage} />
         </motion.div>
 
-        {/* Date */}
-        <motion.div variants={itemVariants} className="text-center mb-5 relative z-10">
+        {/* COUNTDOWN */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
+          <CountdownEvento
+            fechaEvento={evento.fecha_evento}
+            horaEvento={evento.hora_evento}
+          />
+        </motion.div>
+
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <LeafDivider color={sage} />
+        </motion.div>
+
+        {/* DETALLES — con ícono de hoja y separador · */}
+        {/* Fecha */}
+        <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
           <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
+            <LeafIcon color={sage} />
             fecha de la celebración
           </p>
           <p className="font-cormorant text-xl text-center" style={{ color: mint }}>
@@ -182,8 +229,9 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
 
         {/* Venue */}
         {evento.lugar_nombre && (
-          <motion.div variants={itemVariants} className="text-center mb-6 relative z-10">
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
+              <LeafIcon color={sage} />
               jardín del evento
             </p>
             {evento.lugar_maps_url ? (
@@ -202,7 +250,7 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
                 )}
               </a>
             ) : (
-          <p className="font-cormorant text-xl sm:text-2xl text-center" style={{ color: mint }}>
+              <p className="font-cormorant text-xl text-center" style={{ color: mint }}>
                 {evento.lugar_nombre}
                 {evento.lugar_direccion && (
                   <span className="block text-[13px] mt-0.5" style={{ color: dimMint }}>
@@ -216,49 +264,71 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
 
         {/* Dress code */}
         {evento.dress_code && (
-          <motion.div variants={itemVariants} className="text-center mb-6 relative z-10">
+          <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
+              <LeafIcon color={sage} />
               vestimenta
             </p>
             <p className="font-cormorant text-lg" style={{ color: mint }}>{evento.dress_code}</p>
           </motion.div>
         )}
 
-        <motion.div variants={itemVariants} className="mb-6 relative z-10">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
           <LeafDivider color={sage} />
         </motion.div>
 
-        {/* QR */}
+        {/* QR — frame orgánico con hojas decorativas en esquinas superiores */}
         {invitado.qr_url && (
-          <motion.div variants={itemVariants} className="mb-3 relative z-10">
-            <div
-              className="p-4 rounded-2xl"
-              style={{
-                backgroundColor: '#EEF5EE',
-                boxShadow: `0 8px 40px rgba(80,140,80,0.25), 0 4px 16px rgba(0,0,0,0.4)`,
-                border: `1px solid ${sage}25`,
-              }}
-            >
-              <Image
-                src={invitado.qr_url}
-                alt={`Código QR de ${invitado.nombre}`}
-                width={168}
-                height={168}
-                className="block"
-                priority
-              />
+          <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
+            <p className="font-cormorant text-2xl text-center mb-4" style={{ color: mint }}>
+              Tu entrada al jardín
+            </p>
+            <div className="relative">
+              {/* Hojas decorativas esquinas superiores */}
+              <svg
+                className="absolute -top-3 -left-3 pointer-events-none"
+                width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+              >
+                <path d="M4 20 C4 12 8 4 16 4 C12 10 8 16 4 20Z" fill={sage} opacity="0.35" />
+              </svg>
+              <svg
+                className="absolute -top-3 -right-3 pointer-events-none"
+                width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                style={{ transform: 'scaleX(-1)' }}
+              >
+                <path d="M4 20 C4 12 8 4 16 4 C12 10 8 16 4 20Z" fill={sage} opacity="0.35" />
+              </svg>
+              <div
+                style={{
+                  backgroundColor: '#EEF5EE',
+                  borderRadius: '24px',
+                  padding: '16px',
+                  border: `1px solid ${sage}40`,
+                  boxShadow: `0 8px 32px rgba(107,158,107,0.20)`,
+                }}
+              >
+                <Image
+                  src={invitado.qr_url}
+                  alt={`Código QR de ${invitado.nombre}`}
+                  width={168}
+                  height={168}
+                  className="block"
+                  priority
+                />
+              </div>
             </div>
           </motion.div>
         )}
         <motion.p
           variants={itemVariants}
-          className="text-[10px] text-center uppercase tracking-widest mb-10 relative z-10"
+          className="text-[10px] text-center uppercase tracking-widest mb-12 relative z-10"
           style={{ color: `${dimMint}50` }}
         >
-          tu entrada al jardín
+          presentar en la entrada
         </motion.p>
 
-        {/* CTA — HIGH 18 BOTANICAL: organic button, leaf decoration, natural green-gold tone */}
+        {/* CTA */}
         <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px] relative z-10">
           <InvitacionCTA
             token={invitado.token}
@@ -297,12 +367,13 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           />
         </motion.div>
 
-        {/* Footer leaf */}
-        <motion.div variants={itemVariants} className="mt-12 relative z-10">
+        {/* FOOTER */}
+        <motion.div variants={itemVariants} className="mt-12 flex flex-col items-center gap-2 relative z-10">
           <svg width="32" height="20" viewBox="0 0 32 20" fill="none" aria-hidden="true">
             <path d="M16 18 Q8 10 4 4 Q10 6 16 10 Q22 6 28 4 Q24 10 16 18Z"
               fill={sage} opacity="0.35" />
           </svg>
+          <p className="text-[9px] uppercase tracking-widest" style={{ color: `${dimMint}30` }}>SoomosNova</p>
         </motion.div>
       </motion.div>
     </EnvelopeAnimation>

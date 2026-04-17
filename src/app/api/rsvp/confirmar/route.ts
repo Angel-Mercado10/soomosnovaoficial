@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { confirmarRSVP } from '@/lib/rsvp'
-import { sendRsvpConfirmacionEmail, formatFechaLegible } from '@/lib/email'
+import { sendRsvpConfirmacionEmail, sendNotificacionParejaEmail, formatFechaLegible } from '@/lib/email'
 
 interface ConfirmarBody {
   token: string
@@ -78,6 +78,39 @@ export async function POST(req: NextRequest) {
       }
     }
   }
+
+  // ── Notificar a la pareja por email ─────────────────────────────────────────
+  // Side effect — no bloquea el response
+  void (async () => {
+    try {
+      // result.evento solo tiene id, nombre_evento, opciones_menu, permite_acompanante
+      // Necesitamos pareja_id — hacemos un query adicional al evento completo
+      const { data: eventoConPareja } = await admin
+        .from('eventos')
+        .select('pareja_id, nombre_evento')
+        .eq('id', result.evento.id)
+        .single()
+
+      if (eventoConPareja?.pareja_id) {
+        const { data: pareja } = await admin
+          .from('parejas')
+          .select('email')
+          .eq('id', eventoConPareja.pareja_id)
+          .single()
+
+        if (pareja?.email) {
+          await sendNotificacionParejaEmail({
+            parejaEmail: pareja.email,
+            invitadoNombre: result.invitado.nombre,
+            asiste,
+            eventoNombre: eventoConPareja.nombre_evento,
+          })
+        }
+      }
+    } catch {
+      // No crítico
+    }
+  })()
 
   return NextResponse.json({
     success: true,

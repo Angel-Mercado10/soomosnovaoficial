@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { EnvelopeAnimation, type EnvelopeTheme } from './EnvelopeAnimation'
 import { formatFechaEvento, staggerVariants, itemVariants, type InvitationTemplateProps } from './types'
 import { InvitacionCTA } from './InvitacionCTA'
+import CountdownEvento from '@/components/invitado/CountdownEvento'
 
 const theme: EnvelopeTheme = {
   bg: '#0A0A0A',
@@ -118,55 +119,122 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        className="min-h-screen bg-[#0A0A0A] flex flex-col items-center px-6 pt-10 pb-16"
+        className="min-h-screen bg-[#0A0A0A] flex flex-col items-center px-6 pt-10 pb-16 relative overflow-hidden"
       >
-        {/* Rose illustration header (CRITICAL 7) */}
-        <motion.div variants={itemVariants} className="mb-4">
+        {/* SVG noise layer — profundidad de fondo */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          aria-hidden="true"
+          style={{ opacity: 0.04 }}
+        >
+          <filter id="noiseClassica">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noiseClassica)" />
+        </svg>
+
+        {/* Filete vertical dorado — detalle editorial izquierdo */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-px pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C20, #C9A84C40, #C9A84C20, transparent)' }}
+        />
+
+        {/* HERO — ornamento SVG principal */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
           <RoseOrnament />
         </motion.div>
 
-        {/* Gold ornament */}
-        <motion.div variants={itemVariants} className="text-nova-gold text-xl mb-5 leading-none">
+        {/* Frase temática */}
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant italic text-[12px] tracking-[0.18em] text-center mb-4 relative z-10"
+          style={{ color: '#C9A84C80' }}
+        >
+          Dos almas. Una historia. Un día para siempre.
+        </motion.p>
+
+        {/* Gold ornament animado */}
+        <motion.div
+          variants={itemVariants}
+          className="text-nova-gold text-xl mb-6 leading-none relative z-10"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        >
           ✦
         </motion.div>
 
-        {/* Couple names — MEDIUM 25: text-4xl sm:text-5xl */}
+        {/* PAREJA — nombres en tipografía masiva */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-4xl sm:text-5xl text-white text-center leading-tight mb-1"
+          className="font-cormorant text-6xl md:text-8xl text-white text-center leading-none tracking-[0.15em] mb-6 relative z-10"
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* Personal invite */}
-        <motion.p variants={itemVariants} className="text-nova-gray text-sm text-center mb-7">
-          tienen el honor de invitar a{' '}
-          <span className="text-nova-gold font-medium">{invitado.nombre}</span>
+        {/* SALUDO PERSONAL */}
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-xl text-center mb-2 relative z-10"
+          style={{ color: '#9CA3AF' }}
+        >
+          con todo nuestro amor, te invitamos
+        </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-3xl md:text-4xl text-center mb-8 relative z-10"
+          style={{ color: '#C9A84C' }}
+        >
+          {invitado.nombre}
         </motion.p>
 
-        {/* Gold rule divider */}
-        <motion.div variants={itemVariants} className="mb-7">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
           <GoldRule />
         </motion.div>
 
-        {/* Date */}
-        <motion.div variants={itemVariants} className="text-center mb-5">
-          <p className="text-nova-gold text-[10px] uppercase tracking-[0.2em] mb-1">Fecha y hora</p>
-          <p className="text-white text-base sm:text-lg font-light">
+        {/* COUNTDOWN */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
+          <CountdownEvento
+            fechaEvento={evento.fecha_evento}
+            horaEvento={evento.hora_evento}
+          />
+        </motion.div>
+
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <GoldRule />
+        </motion.div>
+
+        {/* DETALLES */}
+        {/* Fecha */}
+        <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 mb-8 relative z-10">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mb-1">
+            <rect x="2" y="4" width="16" height="14" rx="2" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="1" />
+            <line x1="6" y1="2" x2="6" y2="6" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="14" y1="2" x2="14" y2="6" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="2" y1="9" x2="18" y2="9" stroke="#C9A84C" strokeOpacity="0.3" strokeWidth="0.8" />
+          </svg>
+          <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: '#C9A84C80' }}>Fecha y hora</p>
+          <p className="font-cormorant text-xl text-white text-center">
             {formatFechaEvento(evento.fecha_evento, evento.hora_evento)}
           </p>
         </motion.div>
 
-        {/* Venue */}
+        {/* Lugar */}
         {evento.lugar_nombre && (
-          <motion.div variants={itemVariants} className="text-center mb-8">
-            <p className="text-nova-gold text-[10px] uppercase tracking-[0.2em] mb-1">Celebración</p>
+          <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 mb-8 relative z-10">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mb-1">
+              <path d="M10 2C7.24 2 5 4.24 5 7c0 4.25 5 11 5 11s5-6.75 5-11c0-2.76-2.24-5-5-5Z" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="1" />
+              <circle cx="10" cy="7" r="2" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="0.9" />
+            </svg>
+            <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: '#C9A84C80' }}>Celebración</p>
             {evento.lugar_maps_url ? (
               <a
                 href={evento.lugar_maps_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white text-base font-light hover:text-nova-gold transition-colors"
+                className="font-cormorant text-xl text-center text-white hover:text-nova-gold transition-colors"
               >
                 {evento.lugar_nombre}
                 {evento.lugar_direccion && (
@@ -174,7 +242,7 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
                 )}
               </a>
             ) : (
-              <p className="text-white text-base font-light">
+              <p className="font-cormorant text-xl text-center text-white">
                 {evento.lugar_nombre}
                 {evento.lugar_direccion && (
                   <span className="block text-nova-gray text-sm mt-0.5">{evento.lugar_direccion}</span>
@@ -186,16 +254,36 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
 
         {/* Dress code */}
         {evento.dress_code && (
-          <motion.div variants={itemVariants} className="text-center mb-8">
-            <p className="text-nova-gold text-[10px] uppercase tracking-[0.2em] mb-1">Dress code</p>
-            <p className="text-white text-sm font-light">{evento.dress_code}</p>
+          <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 mb-8 relative z-10">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mb-1">
+              <path d="M7 2L5 7H3l3 11h8l3-11h-2L13 2H7Z" stroke="#C9A84C" strokeOpacity="0.6" strokeWidth="1" strokeLinejoin="round" />
+              <path d="M7 2C7 2 8.5 5 10 5C11.5 5 13 2 13 2" stroke="#C9A84C" strokeOpacity="0.4" strokeWidth="0.8" />
+            </svg>
+            <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: '#C9A84C80' }}>Dress code</p>
+            <p className="font-cormorant text-xl text-white">{evento.dress_code}</p>
           </motion.div>
         )}
 
-        {/* QR */}
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <GoldRule />
+        </motion.div>
+
+        {/* QR — momento climático */}
         {invitado.qr_url && (
-          <motion.div variants={itemVariants} className="mb-3">
-            <div className="bg-white rounded-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+          <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
+            <p className="font-cormorant text-2xl text-white text-center mb-4 tracking-wide">
+              Tu pase de entrada
+            </p>
+            <div
+              className="bg-white rounded-lg p-4"
+              style={{
+                border: '2px solid rgba(201,168,76,0.60)',
+                outline: '1px solid rgba(201,168,76,0.30)',
+                outlineOffset: '4px',
+                boxShadow: '0 0 40px rgba(201,168,76,0.15), 0 8px 32px rgba(0,0,0,0.5)',
+              }}
+            >
               <Image
                 src={invitado.qr_url}
                 alt={`Código QR de ${invitado.nombre}`}
@@ -207,12 +295,12 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
             </div>
           </motion.div>
         )}
-        <motion.p variants={itemVariants} className="text-nova-gray/60 text-xs text-center mb-10 max-w-[220px]">
-          Presentá este QR en la entrada del evento
+        <motion.p variants={itemVariants} className="text-nova-gray/60 text-xs text-center mb-12 max-w-[220px] relative z-10">
+          Presentá este código en la entrada del evento
         </motion.p>
 
-        {/* CTA — HIGH 18 CLASICA: elegant gold button, thin border, serif text */}
-        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px]">
+        {/* CTA */}
+        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px] relative z-10">
           <InvitacionCTA
             token={invitado.token}
             eventoSlug={evento.slug}
@@ -227,9 +315,15 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
           />
         </motion.div>
 
-        {/* Footer */}
-        <motion.div variants={itemVariants} className="mt-14 flex flex-col items-center gap-2">
-          <div className="text-nova-gold/30 text-lg">✦</div>
+        {/* FOOTER */}
+        <motion.div variants={itemVariants} className="mt-14 flex flex-col items-center gap-2 relative z-10">
+          <motion.div
+            className="text-nova-gold/30 text-lg"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            ✦
+          </motion.div>
           <p className="text-nova-gray/25 text-[10px] uppercase tracking-widest">SoomosNova</p>
         </motion.div>
       </motion.div>

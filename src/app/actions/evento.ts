@@ -110,14 +110,11 @@ export async function guardarEvento(formData: FormData): Promise<GuardarEventoRe
     opciones_menu = ['Pollo', 'Res', 'Vegetariano']
   }
 
-  let slug = generarSlug(nombre1, nombre2, fecha_evento)
-
   if (evento_id) {
     const { error } = await supabase
       .from('eventos')
       .update({
         nombre_evento: nombre_evento.trim().slice(0, MAX_FIELD_LENGTH),
-        slug,
         fecha_evento,
         hora_evento,
         lugar_nombre,
@@ -140,6 +137,7 @@ export async function guardarEvento(formData: FormData): Promise<GuardarEventoRe
     }
   } else {
     const pin_venue = generarPin()
+    let slug = generarSlug(nombre1, nombre2, fecha_evento)
 
     // Intentar insertar — si hay colisión de slug, agregar sufijo
     let { error } = await supabase.from('eventos').insert({

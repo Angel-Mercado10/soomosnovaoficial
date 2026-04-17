@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { EnvelopeAnimation, type EnvelopeTheme } from './EnvelopeAnimation'
 import { formatFechaEvento, staggerVariants, itemVariants, type InvitationTemplateProps } from './types'
 import { InvitacionCTA } from './InvitacionCTA'
+import CountdownEvento from '@/components/invitado/CountdownEvento'
 
 const theme: EnvelopeTheme = {
   bg: '#080605',
@@ -114,22 +115,43 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
   const cream = '#F5E6C8'
   const dimCream = '#BFA97A'
 
+  // Año del evento para la frase temática
+  const anioEvento = evento.fecha_evento ? new Date(evento.fecha_evento).getFullYear() : new Date().getFullYear()
+
   return (
     <EnvelopeAnimation coupleNames={parejaNombres} theme={theme}>
       <motion.div
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        className="min-h-screen flex flex-col items-center px-6 pt-12 pb-16"
-        style={{ backgroundColor: '#080605' }}
+        className="min-h-screen flex flex-col items-center px-6 pt-12 pb-16 relative overflow-hidden"
+        style={{
+          backgroundColor: '#080605',
+          // Patrón geométrico de rombos como profundidad
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='10,2 18,10 10,18 2,10' fill='none' stroke='rgba(212,160,23,0.06)' stroke-width='0.5'/%3E%3C/svg%3E")`,
+        }}
       >
-        {/* Art Déco sunburst header (CRITICAL 7) */}
-        <motion.div variants={itemVariants} className="mb-5">
-          <ArtDecoSunburst />
+        {/* HERO — ArtDecoSunburst con rotación lenta */}
+        <motion.div variants={itemVariants} className="mb-5 relative z-10">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+          >
+            <ArtDecoSunburst />
+          </motion.div>
         </motion.div>
 
+        {/* Frase temática */}
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-[11px] uppercase tracking-[0.35em] mb-4 text-center relative z-10"
+          style={{ color: `${gold}70` }}
+        >
+          Est. {anioEvento} — Una velada de gala
+        </motion.p>
+
         {/* Crown ornament */}
-        <motion.div variants={itemVariants} className="mb-4 flex items-center gap-2">
+        <motion.div variants={itemVariants} className="mb-4 flex items-center gap-2 relative z-10">
           <div className="w-6 h-px" style={{ backgroundColor: `${gold}50` }} />
           <svg width="24" height="20" viewBox="0 0 24 20" fill="none" aria-hidden="true">
             <path d="M12 2L14 8H20L15 12L17 18L12 14L7 18L9 12L4 8H10L12 2Z"
@@ -138,140 +160,154 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           <div className="w-6 h-px" style={{ backgroundColor: `${gold}50` }} />
         </motion.div>
 
-        {/* Couple names */}
-        <motion.p
-          variants={itemVariants}
-          className="font-cormorant text-[11px] uppercase tracking-[0.35em] mb-2"
-          style={{ color: dimCream }}
-        >
-          con gran alegría
-        </motion.p>
-        {/* Couple names — MEDIUM 25: text-4xl sm:text-5xl */}
+        {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-4xl sm:text-5xl italic text-center leading-tight mb-4"
+          className="font-cormorant text-6xl md:text-8xl italic text-center leading-none tracking-[0.15em] mb-6 relative z-10"
           style={{ color: cream }}
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* Guest line */}
-        <motion.p variants={itemVariants} className="text-[13px] text-center mb-6" style={{ color: dimCream }}>
-          solicitan la presencia de{' '}
-          <span className="font-cormorant text-[17px] not-italic" style={{ color: gold }}>
-            {invitado.nombre}
-          </span>
+        {/* SALUDO PERSONAL — todo uppercase Art Déco */}
+        <motion.p
+          variants={itemVariants}
+          className="text-[11px] uppercase tracking-[0.28em] text-center mb-2 relative z-10"
+          style={{ color: dimCream }}
+        >
+          solicitan su distinguida presencia
+        </motion.p>
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-2xl uppercase tracking-[0.25em] text-center mb-8 relative z-10"
+          style={{ color: gold }}
+        >
+          {invitado.nombre}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="mb-6">
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
           <GeometricDivider color={gold} />
         </motion.div>
 
-        {/* Date */}
-        <motion.div variants={itemVariants} className="text-center mb-5">
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-1.5"
-            style={{ color: `${gold}80` }}
-          >
-            en la celebración
-          </p>
-          <p className="font-cormorant text-xl text-center" style={{ color: cream }}>
-            {formatFechaEvento(evento.fecha_evento, evento.hora_evento)}
-          </p>
+        {/* COUNTDOWN */}
+        <motion.div variants={itemVariants} className="mb-8 relative z-10">
+          <CountdownEvento
+            fechaEvento={evento.fecha_evento}
+            horaEvento={evento.hora_evento}
+          />
+        </motion.div>
+
+        {/* DIVIDER */}
+        <motion.div variants={itemVariants} className="mb-10 relative z-10">
+          <GeometricDivider color={gold} />
+        </motion.div>
+
+        {/* DETALLES — stacked con líneas divisoras entre cada dato */}
+        {/* Fecha */}
+        <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-0 relative z-10">
+          <div className="pt-5 pb-5 border-t" style={{ borderColor: `${gold}20` }}>
+            <p className="text-[9px] uppercase tracking-[0.3em] mb-2 text-center" style={{ color: `${gold}80` }}>
+              en la celebración
+            </p>
+            <p className="font-cormorant text-xl text-center" style={{ color: cream }}>
+              {formatFechaEvento(evento.fecha_evento, evento.hora_evento)}
+            </p>
+          </div>
         </motion.div>
 
         {/* Venue */}
         {evento.lugar_nombre && (
-          <motion.div variants={itemVariants} className="text-center mb-6">
-            <p
-              className="text-[9px] uppercase tracking-[0.3em] mb-1.5"
-              style={{ color: `${gold}80` }}
-            >
-              lugar
-            </p>
-            {evento.lugar_maps_url ? (
-              <a
-                href={evento.lugar_maps_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-cormorant text-xl text-center transition-opacity hover:opacity-80"
-                style={{ color: cream }}
-              >
-                {evento.lugar_nombre}
-                {evento.lugar_direccion && (
-                  <span
-                    className="block text-[13px] mt-0.5"
-                    style={{ color: dimCream }}
-                  >
-                    {evento.lugar_direccion}
-                  </span>
-                )}
-              </a>
-            ) : (
-          <p className="font-cormorant text-xl sm:text-2xl text-center" style={{ color: cream }}>
-                {evento.lugar_nombre}
-                {evento.lugar_direccion && (
-                  <span className="block text-[13px] mt-0.5" style={{ color: dimCream }}>
-                    {evento.lugar_direccion}
-                  </span>
-                )}
+          <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-0 relative z-10">
+            <div className="pt-5 pb-5 border-t" style={{ borderColor: `${gold}20` }}>
+              <p className="text-[9px] uppercase tracking-[0.3em] mb-2 text-center" style={{ color: `${gold}80` }}>
+                lugar
               </p>
-            )}
+              {evento.lugar_maps_url ? (
+                <a
+                  href={evento.lugar_maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-cormorant text-xl text-center block transition-opacity hover:opacity-80"
+                  style={{ color: cream }}
+                >
+                  {evento.lugar_nombre}
+                  {evento.lugar_direccion && (
+                    <span className="block text-[13px] mt-0.5" style={{ color: dimCream }}>
+                      {evento.lugar_direccion}
+                    </span>
+                  )}
+                </a>
+              ) : (
+                <p className="font-cormorant text-xl text-center" style={{ color: cream }}>
+                  {evento.lugar_nombre}
+                  {evento.lugar_direccion && (
+                    <span className="block text-[13px] mt-0.5" style={{ color: dimCream }}>
+                      {evento.lugar_direccion}
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
           </motion.div>
         )}
 
         {/* Dress code */}
         {evento.dress_code && (
-          <motion.div variants={itemVariants} className="text-center mb-6">
-            <p
-              className="text-[9px] uppercase tracking-[0.3em] mb-1.5"
-              style={{ color: `${gold}80` }}
-            >
-              etiqueta
-            </p>
-            <p className="font-cormorant text-lg" style={{ color: cream }}>
-              {evento.dress_code}
-            </p>
+          <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-6 relative z-10">
+            <div className="pt-5 pb-5 border-t border-b" style={{ borderColor: `${gold}20` }}>
+              <p className="text-[9px] uppercase tracking-[0.3em] mb-2 text-center" style={{ color: `${gold}80` }}>
+                etiqueta
+              </p>
+              <p className="font-cormorant text-xl text-center" style={{ color: cream }}>
+                {evento.dress_code}
+              </p>
+            </div>
           </motion.div>
         )}
 
-        <motion.div variants={itemVariants} className="mb-6">
-          <GeometricDivider color={gold} />
-        </motion.div>
+        {/* DIVIDER si no hubo dress code */}
+        {!evento.dress_code && (
+          <motion.div variants={itemVariants} className="mb-6 relative z-10">
+            <GeometricDivider color={gold} />
+          </motion.div>
+        )}
 
-        {/* QR */}
+        {/* QR — cuadrado perfecto, doble borde geométrico */}
         {invitado.qr_url && (
-          <motion.div variants={itemVariants} className="mb-3">
+          <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
+            <p className="font-cormorant text-2xl text-center mb-4 tracking-[0.08em]" style={{ color: cream }}>
+              Código de Acceso
+            </p>
             <div
-              className="p-1 rounded-sm"
-              style={{ border: `1px solid ${gold}30`, backgroundColor: '#FFFFFF' }}
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: `2px solid ${gold}`,
+                boxShadow: `0 0 0 5px #080605, 0 0 0 7px ${gold}50`,
+                padding: '12px',
+              }}
             >
-              <div
-                className="p-3 rounded-sm"
-                style={{ border: `2px solid ${gold}20` }}
-              >
-                <Image
-                  src={invitado.qr_url}
-                  alt={`Código QR de ${invitado.nombre}`}
-                  width={168}
-                  height={168}
-                  className="block"
-                  priority
-                />
-              </div>
+              <Image
+                src={invitado.qr_url}
+                alt={`Código QR de ${invitado.nombre}`}
+                width={168}
+                height={168}
+                className="block"
+                priority
+              />
             </div>
           </motion.div>
         )}
         <motion.p
           variants={itemVariants}
-          className="text-[10px] text-center uppercase tracking-widest mb-10"
+          className="text-[10px] text-center uppercase tracking-widest mb-10 relative z-10"
           style={{ color: `${dimCream}60` }}
         >
-          código de acceso
+          presentar en la entrada
         </motion.p>
 
-        {/* CTA — HIGH 18 ART DÉCO: geometric button, angular corners, uppercase text, gold fill */}
-        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px]">
+        {/* CTA */}
+        <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full max-w-[280px] relative z-10">
           <InvitacionCTA
             token={invitado.token}
             eventoSlug={evento.slug}
@@ -312,10 +348,17 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           />
         </motion.div>
 
-        {/* Bottom geometric border */}
-        <motion.div variants={itemVariants} className="mt-12">
+        {/* FOOTER */}
+        <motion.div variants={itemVariants} className="mt-12 relative z-10">
           <ArtDecoFrame />
         </motion.div>
+        <motion.p
+          variants={itemVariants}
+          className="text-[9px] uppercase tracking-widest mt-3 relative z-10"
+          style={{ color: `${dimCream}30` }}
+        >
+          SoomosNova
+        </motion.p>
       </motion.div>
     </EnvelopeAnimation>
   )
