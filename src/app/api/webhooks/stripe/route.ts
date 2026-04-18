@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Stripe from 'stripe'
 
@@ -10,6 +10,13 @@ export async function POST(req: NextRequest) {
 
   if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
     return NextResponse.json({ error: 'Webhook no configurado' }, { status: 400 })
+  }
+
+  let stripe
+  try {
+    stripe = getStripe()
+  } catch {
+    return NextResponse.json({ error: 'Stripe no configurado' }, { status: 500 })
   }
 
   let event: Stripe.Event

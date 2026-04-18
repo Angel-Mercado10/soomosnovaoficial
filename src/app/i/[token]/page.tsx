@@ -8,19 +8,6 @@ interface PageProps {
   params: Promise<{ token: string }>
 }
 
-async function marcarVista(invitadoId: string) {
-  try {
-    const admin = createAdminClient()
-    await admin
-      .from('invitados')
-      .update({ vista_at: new Date().toISOString() })
-      .eq('id', invitadoId)
-      .is('vista_at', null)
-  } catch {
-    // No crítico — tracking de vista, no bloquea la experiencia
-  }
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { token } = await params
   const admin = createAdminClient()
@@ -94,8 +81,6 @@ export default async function InvitacionPage({ params }: PageProps) {
     .select('nombre_1, nombre_2')
     .eq('id', evento.pareja_id)
     .single()
-
-  void marcarVista(invitado.id)
 
   const parejaNombres = pareja
     ? `${pareja.nombre_1} & ${pareja.nombre_2}`

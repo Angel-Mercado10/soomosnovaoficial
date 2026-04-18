@@ -64,7 +64,7 @@ export default async function AlbumPage({ params, searchParams }: PageProps) {
 
   const { data: fotos } = await admin
     .from('fotos')
-    .select('id, url_original, url_thumbnail, tipo, evento_id, invitado_id, oculto, subido_at')
+    .select('id, cloudinary_public_id, url_original, url_thumbnail, tipo, evento_id, invitado_id, oculto, subido_at')
     .eq('evento_id', evento.id)
     .eq('oculto', false)
     .order('subido_at', { ascending: false })

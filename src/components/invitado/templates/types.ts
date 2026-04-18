@@ -1,9 +1,26 @@
 import type { Variants } from 'framer-motion'
 import type { Evento, Invitado } from '@/types/database'
 
+export type InvitationGuest = Pick<
+  Invitado,
+  'nombre' | 'token' | 'qr_url' | 'estado_confirmacion'
+>
+
+export type InvitationEvent = Pick<
+  Evento,
+  | 'fecha_evento'
+  | 'hora_evento'
+  | 'lugar_nombre'
+  | 'lugar_direccion'
+  | 'lugar_maps_url'
+  | 'dress_code'
+  | 'slug'
+  | 'template'
+>
+
 export interface InvitationTemplateProps {
-  invitado: Invitado
-  evento: Evento
+  invitado: InvitationGuest
+  evento: InvitationEvent
   parejaNombres: string
 }
 

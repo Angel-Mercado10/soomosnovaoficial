@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 
 function formatearFecha(fecha: string): string {
   const date = new Date(fecha + 'T12:00:00')
@@ -52,6 +52,13 @@ export async function POST(_req: NextRequest) {
 
   if (evento.estado_pago === 'pagado') {
     return NextResponse.json({ error: 'El evento ya está activado' }, { status: 400 })
+  }
+
+  let stripe
+  try {
+    stripe = getStripe()
+  } catch {
+    return NextResponse.json({ error: 'Stripe no configurado' }, { status: 500 })
   }
 
   // ── Crear sesión de Stripe Checkout ─────────────────────────────────────────

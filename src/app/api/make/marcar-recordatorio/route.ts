@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import type { Database } from '@/types/database'
 
 interface MarcarRecordatorioBody {
   invitado_id: string
   tipo: 1 | 2
 }
+
+type InvitadoReminderUpdate = Pick<
+  Database['public']['Tables']['invitados']['Update'],
+  'recordatorio_1_at' | 'recordatorio_2_at'
+>
 
 export async function POST(req: NextRequest) {
   // ── Verificar API key ────────────────────────────────────────────────────────
@@ -35,10 +41,12 @@ export async function POST(req: NextRequest) {
 
   // ── Actualizar el campo correspondiente ──────────────────────────────────────
   const campo = tipo === 1 ? 'recordatorio_1_at' : 'recordatorio_2_at'
+  const updateData: InvitadoReminderUpdate =
+    tipo === 1 ? { recordatorio_1_at: ahora } : { recordatorio_2_at: ahora }
 
   const { error } = await admin
     .from('invitados')
-    .update({ [campo]: ahora })
+    .update(updateData)
     .eq('id', invitado_id)
 
   if (error) {
