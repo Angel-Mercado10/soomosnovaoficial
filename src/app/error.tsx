@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 interface ErrorProps {
   error: Error & { digest?: string }
@@ -36,12 +37,12 @@ export default function Error({ error, reset }: ErrorProps) {
         >
           Intentar de nuevo
         </button>
-        <a
+        <Link
           href="/"
           className="border border-[#2A2A2A] hover:border-[#C9A84C]/40 text-[#9CA3AF] hover:text-white text-sm px-6 py-3 rounded-full transition-colors"
         >
           Volver al inicio
-        </a>
+        </Link>
       </div>
 
       <p className="text-[#9CA3AF]/30 text-xs mt-16">SoomosNova</p>

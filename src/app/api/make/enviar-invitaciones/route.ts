@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(_req: NextRequest) {
+  void _req
   // ── Autenticación ────────────────────────────────────────────────────────────
   const supabase = await createClient()
   const {

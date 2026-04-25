@@ -48,10 +48,10 @@ export function Button({
   const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`
 
   if (props.as === 'a') {
-    const { as: _tag, size: _size, ...anchorProps } = props as ButtonAsAnchor & { size?: string }
+    const anchorProps = props as ButtonAsAnchor
     return <a className={classes} {...anchorProps} />
   }
 
-  const { as: _tag, size: _size, ...buttonProps } = props as ButtonAsButton & { size?: string }
+  const buttonProps = props as ButtonAsButton
   return <button className={classes} {...buttonProps} />
 }

@@ -14,6 +14,7 @@ function formatearFecha(fecha: string): string {
 }
 
 export async function POST(_req: NextRequest) {
+  void _req
   // ── Autenticación ────────────────────────────────────────────────────────────
   const supabase = await createClient()
   const {

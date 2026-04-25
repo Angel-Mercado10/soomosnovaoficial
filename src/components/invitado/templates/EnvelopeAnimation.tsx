@@ -24,10 +24,10 @@ type Phase = 'entering' | 'idle' | 'opening' | 'risen' | 'content'
 export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnimationProps) {
   const [phase, setPhase] = useState<Phase>('entering')
   const prefersReduced = useReducedMotion()
+  const currentPhase: Phase = prefersReduced ? 'content' : phase
 
   useEffect(() => {
     if (prefersReduced) {
-      setPhase('content')
       return
     }
     const t0 = setTimeout(() => setPhase('idle'), 700)
@@ -43,15 +43,19 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
   }, [prefersReduced])
 
   const handleTap = () => {
-    if (phase === 'idle') {
+    if (currentPhase === 'idle') {
       setPhase('opening')
       setTimeout(() => setPhase('risen'), 900)
       setTimeout(() => setPhase('content'), 1400)
     }
   }
 
-  const showEnvelope = phase === 'entering' || phase === 'idle' || phase === 'opening' || phase === 'risen'
-  const isOpening = phase === 'opening' || phase === 'risen'
+  const showEnvelope =
+    currentPhase === 'entering' ||
+    currentPhase === 'idle' ||
+    currentPhase === 'opening' ||
+    currentPhase === 'risen'
+  const isOpening = currentPhase === 'opening' || currentPhase === 'risen'
 
   const firstInitial = coupleNames.split('&')[0]?.trim()?.[0] ?? '♡'
   const secondInitial = coupleNames.split('&')[1]?.trim()?.[0] ?? ''
@@ -69,9 +73,9 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
             key="envelope-stage"
             initial={{ opacity: 0, scale: 0.85, y: 32 }}
             animate={{
-              opacity: phase === 'risen' ? 0 : 1,
-              scale: phase === 'risen' ? 0.92 : 1,
-              y: phase === 'risen' ? -16 : 0,
+              opacity: currentPhase === 'risen' ? 0 : 1,
+              scale: currentPhase === 'risen' ? 0.92 : 1,
+              y: currentPhase === 'risen' ? -16 : 0,
             }}
             exit={{ opacity: 0, scale: 0.9, y: -24 }}
             transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
@@ -141,7 +145,7 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
                   >
                     {coupleNames}
                   </p>
-                  {phase === 'idle' && (
+                  {currentPhase === 'idle' && (
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 0.45 }}
@@ -158,7 +162,7 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
                 <motion.div
                   className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30"
                   animate={
-                    phase === 'opening'
+                    currentPhase === 'opening'
                       ? {
                           scale: [1, 1.15, 0.9, 1.05, 0],
                           opacity: [1, 1, 1, 0.6, 0],
@@ -167,7 +171,7 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
                       : { scale: 1, opacity: 1 }
                   }
                   transition={
-                    phase === 'opening'
+                    currentPhase === 'opening'
                       ? { duration: 0.7, ease: 'easeInOut' }
                       : {}
                   }
@@ -223,7 +227,10 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
             {/* Shine hint line below envelope */}
             <motion.div
               initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: phase === 'idle' ? 1 : 0, opacity: phase === 'idle' ? 0.35 : 0 }}
+              animate={{
+                scaleX: currentPhase === 'idle' ? 1 : 0,
+                opacity: currentPhase === 'idle' ? 0.35 : 0,
+              }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="w-16 h-px origin-center"
               style={{ backgroundColor: theme.envelopeAccent }}
@@ -234,7 +241,7 @@ export function EnvelopeAnimation({ coupleNames, theme, children }: EnvelopeAnim
 
       {/* Invitation content — fades in after envelope exits */}
       <AnimatePresence>
-        {phase === 'content' && (
+        {currentPhase === 'content' && (
           <motion.div
             key="invitation-content"
             initial={{ opacity: 0, y: 24 }}

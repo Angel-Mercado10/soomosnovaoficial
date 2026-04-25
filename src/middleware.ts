@@ -101,13 +101,23 @@ export async function middleware(request: NextRequest) {
 
   // ─── Supabase session refresh ───────────────────────────────────────────────
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // Evita romper todo el sitio si faltan variables en el runtime de Vercel
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.next({
+      request,
+    })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -156,13 +166,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Aplica el middleware a todas las rutas excepto:
-     * - _next/static (archivos estáticos)
-     * - _next/image (optimización de imágenes)
-     * - favicon.ico, sitemap.xml, robots.txt
-     * - archivos con extensión (.png, .jpg, etc.)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/dashboard/:path*',
+    '/auth/:path*',
+    '/api/:path*',
+    '/i/:path*',
+    '/rsvp/:path*',
   ],
 }
