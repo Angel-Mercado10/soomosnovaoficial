@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { sendContactEmail } from '@/app/actions/contact'
+import { SITE_CONFIG } from '@/lib/constants'
 
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
-  whatsappUrl: string
 }
 
-type View = 'choice' | 'form' | 'success'
+type View = 'choice' | 'whatsapp' | 'form' | 'success'
 
 type FieldErrors = {
   name?: string
@@ -66,7 +66,7 @@ function ArrowLeftIcon() {
   )
 }
 
-export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
+export function Modal({ isOpen, onClose }: ModalProps) {
   const firstInputRef = useRef<HTMLInputElement>(null)
   const [view, setView] = useState<View>('choice')
   const [isPending, startTransition] = useTransition()
@@ -107,6 +107,9 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
       return () => clearTimeout(timer)
     }
   }, [isOpen])
+
+  const WA_PREVIEW_MESSAGE = `Hola SoomosNova! Quiero conocer más sobre sus servicios de gestión digital para bodas.`
+  const waUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(WA_PREVIEW_MESSAGE)}`
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -174,7 +177,7 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
               {/* Header */}
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {view === 'form' && (
+                  {(view === 'form' || view === 'whatsapp') && (
                     <button
                       onClick={() => { setView('choice'); setErrors({}); setServerError('') }}
                       aria-label="Volver"
@@ -186,6 +189,7 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
                   <span className="text-nova-gold text-base">✦</span>
                   <h2 id="modal-title" className="font-cormorant text-xl font-semibold text-white">
                     {view === 'choice' && 'Atención Privada'}
+                    {view === 'whatsapp' && 'Mensaje por WhatsApp'}
                     {view === 'form' && 'Escribe tu mensaje'}
                     {view === 'success' && 'Mensaje enviado'}
                   </h2>
@@ -205,11 +209,9 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
                   <p className="text-sm text-nova-gray mb-1">
                     Elegí cómo prefieres contactarnos.
                   </p>
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 rounded-xl border border-nova-border bg-nova-black p-4 text-white hover:border-[#25D366]/60 transition-colors duration-200"
+                  <button
+                    onClick={() => setView('whatsapp')}
+                    className="flex items-center gap-4 rounded-xl border border-nova-border bg-nova-black p-4 text-white text-left hover:border-[#25D366]/60 transition-colors duration-200 cursor-pointer"
                   >
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
                       <WhatsAppOptionIcon />
@@ -218,7 +220,7 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
                       <span className="text-sm font-medium">Chatea por WhatsApp</span>
                       <p className="text-xs text-nova-gray mt-0.5">Te respondemos al instante</p>
                     </div>
-                  </a>
+                  </button>
 
                   <button
                     onClick={() => setView('form')}
@@ -232,6 +234,32 @@ export function Modal({ isOpen, onClose, whatsappUrl }: ModalProps) {
                       <p className="text-xs text-nova-gray mt-0.5">Te contactamos por email</p>
                     </div>
                   </button>
+                </div>
+              )}
+
+              {/* WhatsApp preview view */}
+              {view === 'whatsapp' && (
+                <div className="flex flex-col">
+                  <p className="mb-2 text-xs text-nova-gray">
+                    Este mensaje se enviará a nuestro equipo:
+                  </p>
+                  <div
+                    className="mb-5 rounded-xl bg-[#25D366]/8 border border-[#25D366]/20 p-4 text-sm text-white/90 whitespace-pre-wrap leading-relaxed"
+                    aria-label="Vista previa del mensaje"
+                  >
+                    {WA_PREVIEW_MESSAGE}
+                  </div>
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={onClose}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-sm font-medium text-white hover:bg-[#1fb855] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
+                    aria-label="Enviar mensaje por WhatsApp"
+                  >
+                    <WhatsAppOptionIcon />
+                    Enviar por WhatsApp
+                  </a>
                 </div>
               )}
 

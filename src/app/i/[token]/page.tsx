@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { InvitacionTemplate } from '@/components/invitado/templates'
-import { SITE_CONFIG } from '@/lib/constants'
+import { WhatsAppSupportLink } from '@/components/ui/WhatsAppSupportLink'
 
 interface PageProps {
   params: Promise<{ token: string }>
@@ -56,14 +56,11 @@ export default async function InvitacionPage({ params }: PageProps) {
           El enlace que usaste no es válido o ya no está disponible.
           Si creés que es un error, contactanos.
         </p>
-        <a
-          href={`${SITE_CONFIG.whatsappUrl}?text=Hola%2C+tengo+un+problema+con+mi+invitaci%C3%B3n+de+SoomosNova`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
-        >
-          Contactar soporte
-        </a>
+        <WhatsAppSupportLink
+          message="Hola, tengo un problema con mi invitación de SoomosNova. El enlace no es válido."
+          label="Contactar soporte"
+          className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors cursor-pointer"
+        />
       </div>
     )
   }

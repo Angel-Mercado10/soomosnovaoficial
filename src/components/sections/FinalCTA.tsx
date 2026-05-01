@@ -1,10 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
+import { WhatsAppPreviewModal } from '@/components/ui/WhatsAppPreviewModal'
 import { SITE_CONFIG } from '@/lib/constants'
 
+const WA_MESSAGE_CTA = `Hola SoomosNova! Quiero saber más sobre cómo pueden elevar la experiencia de mis invitados.`
+
 export function FinalCTA() {
+  const [waOpen, setWaOpen] = useState(false)
+
   return (
     <section id="contacto" className="relative px-6 py-28 overflow-hidden">
       {/* Atmospheric gold pulse */}
@@ -28,10 +34,8 @@ export function FinalCTA() {
 
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button
-              as="a"
-              href={SITE_CONFIG.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              as="button"
+              onClick={() => setWaOpen(true)}
               variant="primary"
               size="lg"
             >
@@ -57,6 +61,12 @@ export function FinalCTA() {
           </div>
         </motion.div>
       </div>
+
+      <WhatsAppPreviewModal
+        isOpen={waOpen}
+        onClose={() => setWaOpen(false)}
+        message={WA_MESSAGE_CTA}
+      />
     </section>
   )
 }

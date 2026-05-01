@@ -4,9 +4,27 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+// El username admin se mapea a un email interno vía variable de entorno.
+// NEXT_PUBLIC_ADMIN_EMAIL se incluye en el bundle del cliente (es público por convención de Next.js).
+// No es un secreto — el email está visible en el cliente; la seguridad real está en la contraseña y en app_metadata.
+const ADMIN_USERNAME = 'SoomosAdmin99'
+const ADMIN_EMAIL_ALIAS = process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? null
+
+function resolveEmail(input: string): string {
+  const trimmed = input.trim()
+  if (
+    ADMIN_EMAIL_ALIAS &&
+    trimmed.toLowerCase() === ADMIN_USERNAME.toLowerCase()
+  ) {
+    return ADMIN_EMAIL_ALIAS
+  }
+  return trimmed.toLowerCase()
+}
+
 export function LoginForm() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  // Acepta email o username
+  const [emailOrUsername, setEmailOrUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,18 +36,28 @@ export function LoginForm() {
 
     try {
       const supabase = createClient()
+      const resolvedEmail = resolveEmail(emailOrUsername)
 
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: resolvedEmail,
         password,
       })
 
       if (signInError) {
-        setError('Email o contraseña incorrectos.')
+        setError('Credenciales incorrectas.')
         return
       }
 
-      router.push('/dashboard')
+      // Redirigir según rol.
+      // Nota: esta redirección es solo UX (el servidor re-verifica en layout).
+      // Usamos app_metadata — único campo no modificable por el usuario en Supabase.
+      const appMeta = data.user?.app_metadata as Record<string, unknown> | undefined
+      const role = appMeta?.role as string | undefined
+      if (role === 'super_admin') {
+        router.push('/admin')
+      } else {
+        router.push('/dashboard')
+      }
       router.refresh()
     } finally {
       setLoading(false)
@@ -40,15 +68,16 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="email" className="block text-sm text-[#9CA3AF] mb-1">
-          Email
+          Email o usuario
         </label>
         <input
           id="email"
-          type="email"
+          type="text"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={emailOrUsername}
+          onChange={(e) => setEmailOrUsername(e.target.value)}
           placeholder="ana@ejemplo.com"
+          autoComplete="username"
           className="w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg px-4 py-3 text-white placeholder-[#4A4A4A] focus:outline-none focus:border-[#C9A84C] transition-colors"
         />
       </div>

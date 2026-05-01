@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion'
 import { Modal } from '@/components/ui/Modal'
 import { useModalState } from '@/hooks/useModal'
-import { SITE_CONFIG } from '@/lib/constants'
 
 function WhatsAppIcon() {
   return (
@@ -37,7 +36,7 @@ export function WhatsAppFloat() {
         <WhatsAppIcon />
       </motion.button>
 
-      <Modal isOpen={isOpen} onClose={close} whatsappUrl={SITE_CONFIG.whatsappUrl} />
+      <Modal isOpen={isOpen} onClose={close} />
     </>
   )
 }

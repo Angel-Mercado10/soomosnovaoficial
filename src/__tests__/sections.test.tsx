@@ -60,11 +60,10 @@ describe('Hero', () => {
     expect(link).toHaveAttribute('target', '_blank')
   })
 
-  it('has WhatsApp CTA with correct href', () => {
+  it('has WhatsApp CTA as a button that opens preview modal', () => {
     render(<Hero />)
-    const link = screen.getByRole('link', { name: 'Chatea por WhatsApp' })
-    expect(link).toHaveAttribute('href', SITE_CONFIG.whatsappUrl)
-    expect(link).toHaveAttribute('target', '_blank')
+    const btn = screen.getByRole('button', { name: 'Chatea por WhatsApp' })
+    expect(btn).toBeInTheDocument()
   })
 })
 
@@ -103,11 +102,10 @@ describe('Testimonials', () => {
 })
 
 describe('FinalCTA', () => {
-  it('renders WhatsApp CTA with correct href', () => {
+  it('has WhatsApp CTA as a button that opens preview modal', () => {
     render(<FinalCTA />)
-    const link = screen.getByRole('link', { name: 'Chatea por WhatsApp' })
-    expect(link).toHaveAttribute('href', SITE_CONFIG.whatsappUrl)
-    expect(link).toHaveAttribute('target', '_blank')
+    const btn = screen.getByRole('button', { name: 'Chatea por WhatsApp' })
+    expect(btn).toBeInTheDocument()
   })
 
   it('has contacto section id', () => {

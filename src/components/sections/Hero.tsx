@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
+import { WhatsAppPreviewModal } from '@/components/ui/WhatsAppPreviewModal'
 import { SITE_CONFIG } from '@/lib/constants'
 
 const fadeUp = {
@@ -13,7 +15,11 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.12 } },
 }
 
+const WA_MESSAGE_HERO = `Hola SoomosNova! Me interesa conocer más sobre sus servicios de gestión digital para bodas.`
+
 export function Hero() {
+  const [waOpen, setWaOpen] = useState(false)
+
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-28 text-center overflow-hidden">
       {/* Background atmosphere */}
@@ -93,10 +99,8 @@ export function Hero() {
             Agenda tu demo gratis
           </Button>
           <Button
-            as="a"
-            href={SITE_CONFIG.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            as="button"
+            onClick={() => setWaOpen(true)}
             variant="secondary"
             size="lg"
           >
@@ -113,6 +117,12 @@ export function Hero() {
           Sin tarjeta de crédito · Demo en menos de 30 minutos · Cancelá cuando quieras
         </motion.p>
       </motion.div>
+
+      <WhatsAppPreviewModal
+        isOpen={waOpen}
+        onClose={() => setWaOpen(false)}
+        message={WA_MESSAGE_HERO}
+      />
     </section>
   )
 }

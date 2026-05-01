@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SITE_CONFIG } from '@/lib/constants'
+import { WhatsAppSupportLink } from '@/components/ui/WhatsAppSupportLink'
 
 export default function NotFound() {
   return (
@@ -26,14 +26,11 @@ export default function NotFound() {
         >
           Volver al inicio
         </Link>
-        <a
-          href={SITE_CONFIG.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="border border-[#2A2A2A] hover:border-[#C9A84C]/40 text-[#9CA3AF] hover:text-white text-sm px-6 py-3 rounded-full transition-colors"
-        >
-          Contactar soporte
-        </a>
+        <WhatsAppSupportLink
+          message="Hola SoomosNova! Encontré un error 404 en su sitio y quiero reportarlo."
+          label="Contactar soporte"
+          className="border border-[#2A2A2A] hover:border-[#C9A84C]/40 text-[#9CA3AF] hover:text-white text-sm px-6 py-3 rounded-full transition-colors cursor-pointer"
+        />
       </div>
 
       <p className="text-[#9CA3AF]/30 text-xs mt-16">SoomosNova</p>

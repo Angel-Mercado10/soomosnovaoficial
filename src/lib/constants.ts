@@ -4,8 +4,8 @@ export const SITE_CONFIG: SiteConfig = {
   siteName: 'SoomosNova',
   domain: 'soomosnova.com',
   calendarUrl: 'https://calendar.app.google/JgHUuWfwyhUqsLV3A',
-  whatsappNumber: '52559958257',
-  whatsappUrl: 'https://wa.me/52559958257',
+  whatsappNumber: '525569695490',
+  whatsappUrl: 'https://wa.me/525569695490',
   email: 'hola@soomosnova.com',
   phone: '+52 55 5995 8257',
 }

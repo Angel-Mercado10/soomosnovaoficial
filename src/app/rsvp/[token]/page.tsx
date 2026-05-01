@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import RSVPForm from '@/components/invitado/RSVPForm'
 import { PageTransition } from '@/components/ui/PageTransition'
-import { SITE_CONFIG } from '@/lib/constants'
+import { WhatsAppSupportLink } from '@/components/ui/WhatsAppSupportLink'
 
 interface PageProps {
   params: Promise<{ token: string }>
@@ -54,14 +54,11 @@ export default async function RSVPPage({ params, searchParams }: PageProps) {
             No encontramos una invitación vinculada a este enlace.
             Si crees que es un error, escribinos por WhatsApp.
           </p>
-          <a
-            href={`${SITE_CONFIG.whatsappUrl}?text=Hola%2C+tengo+un+problema+con+mi+RSVP+de+SoomosNova`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
-          >
-            Contactar soporte
-          </a>
+          <WhatsAppSupportLink
+            message="Hola, tengo un problema con mi RSVP de SoomosNova. Mi enlace no funciona."
+            label="Contactar soporte"
+            className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors cursor-pointer"
+          />
         </div>
       </PageTransition>
     )
@@ -175,14 +172,11 @@ export default async function RSVPPage({ params, searchParams }: PageProps) {
             {invitado.nombre}, alcanzaste el límite de {MAX_CAMBIOS} cambios en tu
             respuesta. Para modificarla, contactá directamente a los novios.
           </p>
-          <a
-            href={`${SITE_CONFIG.whatsappUrl}?text=Hola%2C+necesito+cambiar+mi+respuesta+de+RSVP+para+${encodeURIComponent(invitado.nombre)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors"
-          >
-            Contactar a los novios
-          </a>
+          <WhatsAppSupportLink
+            message={`Hola, necesito cambiar mi respuesta de RSVP. Mi nombre es ${invitado.nombre}.`}
+            label="Contactar a los novios"
+            className="bg-[#C9A84C] hover:bg-[#b8943e] text-[#0A0A0A] font-semibold text-sm px-6 py-3 rounded-full transition-colors cursor-pointer"
+          />
         </div>
       </PageTransition>
     )

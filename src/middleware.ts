@@ -152,12 +152,36 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Rutas de auth redirigen al dashboard si ya hay sesión
-  if (pathname.startsWith('/auth/') && pathname !== '/auth/callback') {
-    if (user) {
+  // Rutas de admin: requieren sesión Y rol super_admin (verificación rápida en middleware)
+  // NOTA: el layout server de /admin hace doble verificación con createAdminClient.
+  if (pathname.startsWith('/admin')) {
+    if (!user) {
+      const loginUrl = request.nextUrl.clone()
+      loginUrl.pathname = '/auth/login'
+      loginUrl.searchParams.set('next', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+    // Verificación de rol desde app_metadata en el JWT (Edge-compatible).
+    // app_metadata SÓLO puede ser escrito por service role / admin API — no por el usuario.
+    const role = (user.app_metadata as Record<string, unknown>)?.role as string | undefined
+    if (role !== 'super_admin') {
+      // Usuario autenticado pero sin permisos → redirigir al dashboard de pareja
       const dashboardUrl = request.nextUrl.clone()
       dashboardUrl.pathname = '/dashboard'
       return NextResponse.redirect(dashboardUrl)
+    }
+  }
+
+  // Rutas de auth redirigen al dashboard si ya hay sesión
+  if (pathname.startsWith('/auth/') && pathname !== '/auth/callback') {
+    if (user) {
+      // Admin va a /admin, pareja normal va a /dashboard
+      // Usamos app_metadata — fuente de verdad para roles (no modificable por el usuario).
+      const role = (user.app_metadata as Record<string, unknown>)?.role as string | undefined
+      const dest = role === 'super_admin' ? '/admin' : '/dashboard'
+      const destUrl = request.nextUrl.clone()
+      destUrl.pathname = dest
+      return NextResponse.redirect(destUrl)
     }
   }
 
@@ -167,6 +191,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
+    '/admin/:path*',
     '/auth/:path*',
     '/api/:path*',
     '/i/:path*',
