@@ -333,10 +333,60 @@ export interface Database {
         }
         Relationships: []
       }
+      pagos: {
+        Row: {
+          id: string
+          evento_id: string
+          pareja_id: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          amount_cents: number
+          currency: string
+          status: 'pending' | 'succeeded' | 'failed' | 'refunded'
+          is_manual: boolean
+          paid_at: string | null
+          raw_event: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          evento_id: string
+          pareja_id: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          amount_cents: number
+          currency?: string
+          status?: 'pending' | 'succeeded' | 'failed' | 'refunded'
+          is_manual?: boolean
+          paid_at?: string | null
+          raw_event?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          evento_id?: string
+          pareja_id?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          amount_cents?: number
+          currency?: string
+          status?: 'pending' | 'succeeded' | 'failed' | 'refunded'
+          is_manual?: boolean
+          paid_at?: string | null
+          raw_event?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
-    Enums: Record<string, never>
+    Enums: {
+      pago_status: 'pending' | 'succeeded' | 'failed' | 'refunded'
+    }
     CompositeTypes: Record<string, never>
   }
 }
@@ -360,3 +410,5 @@ export type Confirmacion = Tables<'confirmaciones'>
 export type Ingreso = Tables<'ingresos'>
 export type Foto = Tables<'fotos'>
 export type Dedicatoria = Tables<'dedicatorias'>
+export type Pago = Tables<'pagos'>
+export type PagoStatus = Database['public']['Enums']['pago_status']

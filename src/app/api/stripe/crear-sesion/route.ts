@@ -5,7 +5,7 @@ import { getStripe } from '@/lib/stripe'
 
 function formatearFecha(fecha: string): string {
   const date = new Date(fecha + 'T12:00:00')
-  return date.toLocaleDateString('es-AR', {
+  return date.toLocaleDateString('es-MX', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -82,6 +82,12 @@ export async function POST(_req: NextRequest) {
     metadata: {
       evento_id: evento.id,
       pareja_id: evento.pareja_id,
+    },
+    payment_intent_data: {
+      metadata: {
+        evento_id: evento.id,
+        pareja_id: evento.pareja_id,
+      },
     },
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/pago/exito?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/pago/cancelado`,

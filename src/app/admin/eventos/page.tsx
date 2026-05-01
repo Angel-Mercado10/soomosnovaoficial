@@ -93,14 +93,22 @@ export default async function AdminEventosPage() {
                       </td>
                       <td className="px-5 py-3 text-[#9CA3AF] capitalize">{evento.template}</td>
                       <td className="px-5 py-3">
-                        <a
-                          href={`/i/${evento.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-[#C9A84C] hover:underline"
-                        >
-                          Ver invitación →
-                        </a>
+                        <div className="flex flex-col gap-1">
+                          <a
+                            href={`/i/${evento.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#C9A84C] hover:underline"
+                          >
+                            Ver invitación →
+                          </a>
+                          <a
+                            href={`/admin/eventos/${evento.id}`}
+                            className="text-xs text-[#9CA3AF] hover:text-white hover:underline"
+                          >
+                            Detalle →
+                          </a>
+                        </div>
                       </td>
                     </tr>
                   )
