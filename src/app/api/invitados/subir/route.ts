@@ -38,7 +38,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (!evento) {
     return NextResponse.json(
-      { error: 'Primero debés configurar tu evento antes de subir invitados.' },
+      { error: 'Primero debe configurar su evento antes de subir invitados.' },
       { status: 400 }
     )
   }

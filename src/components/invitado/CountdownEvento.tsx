@@ -15,7 +15,10 @@ interface TimeLeft {
 }
 
 function calcularTiempo(fechaEvento: string, horaEvento: string | null): TimeLeft {
-  const hora = horaEvento ?? '00:00'
+  // Normalizar hora: el DB puede devolver "HH:MM", "HH:MM:SS" o null.
+  // Tomamos solo los primeros 5 caracteres para garantizar formato "HH:MM".
+  const horaRaw = horaEvento ?? '00:00'
+  const hora = horaRaw.length >= 5 ? horaRaw.slice(0, 5) : horaRaw
   const target = new Date(`${fechaEvento}T${hora}:00`)
   const now = new Date()
   const diff = target.getTime() - now.getTime()

@@ -21,30 +21,19 @@ function GeometricDivider({ color }: { color: string }) {
   return (
     <div className="flex items-center justify-center gap-2 w-full max-w-[260px]">
       <div className="flex-1 h-px" style={{ backgroundColor: `${color}30` }} />
-      <div
-        className="w-2 h-2 rotate-45"
-        style={{ backgroundColor: color, opacity: 0.7 }}
-      />
-      <div
-        className="w-1 h-1 rotate-45"
-        style={{ backgroundColor: color, opacity: 0.45 }}
-      />
-      <div
-        className="w-2 h-2 rotate-45"
-        style={{ backgroundColor: color, opacity: 0.7 }}
-      />
+      <div className="w-2 h-2 rotate-45" style={{ backgroundColor: color, opacity: 0.7 }} />
+      <div className="w-1 h-1 rotate-45" style={{ backgroundColor: color, opacity: 0.45 }} />
+      <div className="w-2 h-2 rotate-45" style={{ backgroundColor: color, opacity: 0.7 }} />
       <div className="flex-1 h-px" style={{ backgroundColor: `${color}30` }} />
     </div>
   )
 }
 
 /**
- * Art Déco sunburst / fan header — CRITICAL 7.
- * Proper fan rays with layered arcs, tick marks, corner chevrons and central diamond.
+ * Art Déco sunburst / fan header
  */
 function ArtDecoSunburst() {
   const gold = '#D4A017'
-  // 9 symmetrical fan rays emanating from center-bottom focal point
   const rays = [
     'M130 52 L68 2',
     'M130 52 L85 0',
@@ -58,32 +47,23 @@ function ArtDecoSunburst() {
   ]
   return (
     <svg width="280" height="64" viewBox="0 0 280 64" fill="none" aria-hidden="true">
-      {/* Fan rays */}
       {rays.map((d, i) => (
         <path key={i} d={d} stroke={gold} strokeOpacity={0.30 - i * 0.005} strokeWidth="0.8" />
       ))}
-      {/* Outer arc */}
       <path d="M68 2 Q130 22 192 2" stroke={gold} strokeOpacity="0.22" strokeWidth="0.9" fill="none" />
-      {/* Inner arc */}
       <path d="M88 16 Q130 30 172 16" stroke={gold} strokeOpacity="0.16" strokeWidth="0.7" fill="none" />
-      {/* Innermost arc */}
       <path d="M108 30 Q130 38 152 30" stroke={gold} strokeOpacity="0.12" strokeWidth="0.6" fill="none" />
-      {/* Central sunburst diamond */}
       <rect x="126" y="48" width="8" height="8" transform="rotate(45 130 52)" fill={gold} opacity="0.88" />
       <rect x="128" y="50" width="4" height="4" transform="rotate(45 130 52)" fill={gold} opacity="0.50" />
-      {/* Horizontal rule */}
       <line x1="0" y1="60" x2="112" y2="60" stroke={gold} strokeOpacity="0.28" strokeWidth="0.8" />
       <line x1="148" y1="60" x2="280" y2="60" stroke={gold} strokeOpacity="0.28" strokeWidth="0.8" />
-      {/* Corner chevrons */}
       <path d="M0 4 L7 4 L7 11" stroke={gold} strokeOpacity="0.45" strokeWidth="0.9" fill="none" />
       <path d="M280 4 L273 4 L273 11" stroke={gold} strokeOpacity="0.45" strokeWidth="0.9" fill="none" />
       <path d="M0 56 L7 56 L7 49" stroke={gold} strokeOpacity="0.35" strokeWidth="0.8" fill="none" />
       <path d="M280 56 L273 56 L273 49" stroke={gold} strokeOpacity="0.35" strokeWidth="0.8" fill="none" />
-      {/* Tick marks along rule */}
       {[40, 60, 80, 100, 160, 180, 200, 220].map((x) => (
         <line key={x} x1={x} y1="57" x2={x} y2="63" stroke={gold} strokeOpacity="0.20" strokeWidth="0.6" />
       ))}
-      {/* Small flanking diamonds */}
       <rect x="108" y="56" width="5" height="5" transform="rotate(45 110.5 58.5)" fill={gold} opacity="0.42" />
       <rect x="165" y="56" width="5" height="5" transform="rotate(45 167.5 58.5)" fill={gold} opacity="0.42" />
     </svg>
@@ -94,17 +74,78 @@ function ArtDecoFrame() {
   const gold = '#D4A017'
   return (
     <svg width="280" height="12" viewBox="0 0 280 12" fill="none" aria-hidden="true">
-      {/* Center diamond */}
       <rect x="126" y="4" width="8" height="8" transform="rotate(45 130 8)" fill={gold} opacity="0.80" />
-      {/* Flanking lines */}
       <line x1="0" y1="8" x2="118" y2="8" stroke={gold} strokeOpacity="0.28" strokeWidth="0.8" />
       <line x1="142" y1="8" x2="280" y2="8" stroke={gold} strokeOpacity="0.28" strokeWidth="0.8" />
-      {/* Corner accents */}
       <rect x="2" y="4" width="5" height="5" transform="rotate(45 4.5 6.5)" fill={gold} opacity="0.42" />
       <rect x="273" y="4" width="5" height="5" transform="rotate(45 275.5 6.5)" fill={gold} opacity="0.42" />
-      {/* Inner tick marks */}
       {[40, 60, 80, 100, 160, 180, 200, 220].map((x) => (
         <line key={x} x1={x} y1="5" x2={x} y2="11" stroke={gold} strokeOpacity="0.20" strokeWidth="0.6" />
+      ))}
+    </svg>
+  )
+}
+
+/**
+ * Marco Art Déco de esquinas — líneas escalonadas escalonadas en las 4 esquinas
+ */
+function ArtDecoCorners() {
+  const gold = '#D4A017'
+  // Cada esquina: dos "L" paralelas escalonadas hacia adentro
+  const TL = (
+    <g>
+      <path d="M0 44 L0 0 L44 0" stroke={gold} strokeOpacity="0.48" strokeWidth="1.0" fill="none" />
+      <path d="M6 44 L6 6 L44 6" stroke={gold} strokeOpacity="0.22" strokeWidth="0.6" fill="none" />
+      <path d="M12 36 L12 12 L36 12" stroke={gold} strokeOpacity="0.12" strokeWidth="0.5" fill="none" />
+      {/* Diamante en la esquina interna */}
+      <rect x="9" y="9" width="6" height="6" transform="rotate(45 12 12)" fill={gold} opacity="0.55" />
+      {/* Tick marks en los brazos */}
+      <line x1="0" y1="16" x2="6" y2="16" stroke={gold} strokeOpacity="0.35" strokeWidth="0.7" />
+      <line x1="0" y1="28" x2="6" y2="28" stroke={gold} strokeOpacity="0.25" strokeWidth="0.6" />
+      <line x1="16" y1="0" x2="16" y2="6" stroke={gold} strokeOpacity="0.35" strokeWidth="0.7" />
+      <line x1="28" y1="0" x2="28" y2="6" stroke={gold} strokeOpacity="0.25" strokeWidth="0.6" />
+    </g>
+  )
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden="true"
+      style={{ opacity: 0.85 }}
+    >
+      {/* Top-left */}
+      <g transform="translate(10, 10)">{TL}</g>
+      {/* Top-right (mirrored X) */}
+      <g transform="translate(calc(100% - 10px), 10) scale(-1, 1)">{TL}</g>
+      {/* Bottom-left (mirrored Y) */}
+      <g transform="translate(10, calc(100% - 10px)) scale(1, -1)">{TL}</g>
+      {/* Bottom-right (mirrored XY) */}
+      <g transform="translate(calc(100% - 10px), calc(100% - 10px)) scale(-1, -1)">{TL}</g>
+    </svg>
+  )
+}
+
+/**
+ * Banda de separación geométrica escalonada — solo líneas
+ */
+function SteppedBand() {
+  const gold = '#D4A017'
+  return (
+    <svg width="280" height="20" viewBox="0 0 280 20" fill="none" aria-hidden="true">
+      {/* Línea triple de medio */}
+      <line x1="0" y1="10" x2="106" y2="10" stroke={gold} strokeOpacity="0.30" strokeWidth="0.8" />
+      <line x1="0" y1="6" x2="80" y2="6" stroke={gold} strokeOpacity="0.15" strokeWidth="0.5" />
+      <line x1="0" y1="14" x2="80" y2="14" stroke={gold} strokeOpacity="0.15" strokeWidth="0.5" />
+      {/* Centro ornamental */}
+      <rect x="126" y="6" width="8" height="8" transform="rotate(45 130 10)" fill={gold} opacity="0.70" />
+      <rect x="114" y="8" width="4" height="4" transform="rotate(45 116 10)" fill={gold} opacity="0.40" />
+      <rect x="138" y="8" width="4" height="4" transform="rotate(45 140 10)" fill={gold} opacity="0.40" />
+      {/* Espejo derecho */}
+      <line x1="280" y1="10" x2="174" y2="10" stroke={gold} strokeOpacity="0.30" strokeWidth="0.8" />
+      <line x1="280" y1="6" x2="200" y2="6" stroke={gold} strokeOpacity="0.15" strokeWidth="0.5" />
+      <line x1="280" y1="14" x2="200" y2="14" stroke={gold} strokeOpacity="0.15" strokeWidth="0.5" />
+      {/* Pequeños ticks */}
+      {[40, 60, 80, 200, 220, 240].map((x) => (
+        <line key={x} x1={x} y1="7" x2={x} y2="13" stroke={gold} strokeOpacity="0.22" strokeWidth="0.6" />
       ))}
     </svg>
   )
@@ -115,7 +156,6 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
   const cream = '#F5E6C8'
   const dimCream = '#BFA97A'
 
-  // Año del evento para la frase temática
   const anioEvento = evento.fecha_evento ? new Date(evento.fecha_evento).getFullYear() : new Date().getFullYear()
 
   return (
@@ -127,10 +167,23 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
         className="min-h-screen flex flex-col items-center px-6 pt-12 pb-16 relative overflow-hidden"
         style={{
           backgroundColor: '#080605',
-          // Patrón geométrico de rombos como profundidad
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='10,2 18,10 10,18 2,10' fill='none' stroke='rgba(212,160,23,0.06)' stroke-width='0.5'/%3E%3C/svg%3E")`,
         }}
       >
+        {/* Marcos Art Déco de 4 esquinas — elemento visual primario */}
+        <ArtDecoCorners />
+
+        {/* Filete lateral izquierdo — triple */}
+        <div className="absolute left-0 top-0 bottom-0 pointer-events-none" style={{ width: 6 }}>
+          <div className="absolute inset-y-0 left-0 w-px" style={{ background: `linear-gradient(to bottom, transparent, ${gold}40, ${gold}60, ${gold}40, transparent)` }} />
+          <div className="absolute inset-y-0 left-[3px] w-px" style={{ background: `linear-gradient(to bottom, transparent, ${gold}18, ${gold}28, ${gold}18, transparent)` }} />
+        </div>
+        {/* Filete lateral derecho — triple */}
+        <div className="absolute right-0 top-0 bottom-0 pointer-events-none" style={{ width: 6 }}>
+          <div className="absolute inset-y-0 right-0 w-px" style={{ background: `linear-gradient(to bottom, transparent, ${gold}40, ${gold}60, ${gold}40, transparent)` }} />
+          <div className="absolute inset-y-0 right-[3px] w-px" style={{ background: `linear-gradient(to bottom, transparent, ${gold}18, ${gold}28, ${gold}18, transparent)` }} />
+        </div>
+
         {/* HERO — ArtDecoSunburst con rotación lenta */}
         <motion.div variants={itemVariants} className="mb-5 relative z-10">
           <motion.div
@@ -144,11 +197,32 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
         {/* Frase temática */}
         <motion.p
           variants={itemVariants}
-          className="font-cormorant text-[11px] uppercase tracking-[0.35em] mb-4 text-center relative z-10"
+          className="font-cormorant text-[11px] uppercase tracking-[0.35em] mb-3 text-center relative z-10"
           style={{ color: `${gold}70` }}
         >
           Est. {anioEvento} — Una velada de gala
         </motion.p>
+
+        {/* Banda escalonada decorativa */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <SteppedBand />
+        </motion.div>
+
+        {/* FRASE HERO */}
+        <motion.div variants={itemVariants} className="mb-5 relative z-10 text-center px-4">
+          <p className="font-cormorant text-2xl md:text-3xl leading-snug" style={{ color: cream }}>
+            ¡Nos casamos!{' '}
+            <span className="italic" style={{ color: gold }}>
+              Y te invitamos a celebrar nuestro día
+            </span>
+            <span style={{ color: gold }} className="text-xl">!!!</span>
+          </p>
+        </motion.div>
+
+        {/* Banda escalonada decorativa inferior */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <SteppedBand />
+        </motion.div>
 
         {/* Crown ornament */}
         <motion.div variants={itemVariants} className="mb-4 flex items-center gap-2 relative z-10">
@@ -163,13 +237,22 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
         {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-6xl md:text-8xl italic text-center leading-none tracking-[0.15em] mb-6 relative z-10"
+          className="font-cormorant text-6xl md:text-8xl italic text-center leading-none tracking-[0.15em] mb-1 relative z-10"
           style={{ color: cream }}
         >
           {parejaNombres}
         </motion.h1>
 
-        {/* SALUDO PERSONAL — todo uppercase Art Déco */}
+        {/* Año / sello de fecha debajo del nombre */}
+        <motion.p
+          variants={itemVariants}
+          className="text-[9px] uppercase tracking-[0.55em] mb-6 relative z-10 text-center"
+          style={{ color: `${gold}50` }}
+        >
+          ── {anioEvento} ──
+        </motion.p>
+
+        {/* SALUDO PERSONAL */}
         <motion.p
           variants={itemVariants}
           className="text-[11px] uppercase tracking-[0.28em] text-center mb-2 relative z-10"
@@ -203,8 +286,7 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           <GeometricDivider color={gold} />
         </motion.div>
 
-        {/* DETALLES — stacked con líneas divisoras entre cada dato */}
-        {/* Fecha */}
+        {/* DETALLES */}
         <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-0 relative z-10">
           <div className="pt-5 pb-5 border-t" style={{ borderColor: `${gold}20` }}>
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2 text-center" style={{ color: `${gold}80` }}>
@@ -216,7 +298,6 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           </div>
         </motion.div>
 
-        {/* Venue */}
         {evento.lugar_nombre && (
           <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-0 relative z-10">
             <div className="pt-5 pb-5 border-t" style={{ borderColor: `${gold}20` }}>
@@ -252,7 +333,6 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           </motion.div>
         )}
 
-        {/* Dress code */}
         {evento.dress_code && (
           <motion.div variants={itemVariants} className="w-full max-w-[280px] mb-6 relative z-10">
             <div className="pt-5 pb-5 border-t border-b" style={{ borderColor: `${gold}20` }}>
@@ -266,35 +346,50 @@ export function PlantillaArtDeco({ invitado, evento, parejaNombres }: Invitation
           </motion.div>
         )}
 
-        {/* DIVIDER si no hubo dress code */}
         {!evento.dress_code && (
           <motion.div variants={itemVariants} className="mb-6 relative z-10">
             <GeometricDivider color={gold} />
           </motion.div>
         )}
 
-        {/* QR — cuadrado perfecto, doble borde geométrico */}
+        {/* QR — triple borde geométrico */}
         {invitado.qr_url && (
           <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
             <p className="font-cormorant text-2xl text-center mb-4 tracking-[0.08em]" style={{ color: cream }}>
               Código de Acceso
             </p>
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                border: `2px solid ${gold}`,
-                boxShadow: `0 0 0 5px #080605, 0 0 0 7px ${gold}50`,
-                padding: '12px',
-              }}
-            >
-              <Image
-                src={invitado.qr_url}
-                alt={`Código QR de ${invitado.nombre}`}
-                width={168}
-                height={168}
-                className="block"
-                priority
-              />
+            <div className="relative">
+              {/* Esquinas Art Déco para el QR */}
+              {[
+                'translate(-10, -10)',
+                'translate(calc(100% + 10px), -10) scale(-1,1)',
+                'translate(-10, calc(100% + 10px)) scale(1,-1)',
+                'translate(calc(100% + 10px), calc(100% + 10px)) scale(-1,-1)',
+              ].map((transform, i) => (
+                <svg key={i} className="absolute pointer-events-none" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"
+                  style={{ top: i < 2 ? -10 : 'auto', bottom: i >= 2 ? -10 : 'auto', left: i % 2 === 0 ? -10 : 'auto', right: i % 2 === 1 ? -10 : 'auto' }}
+                >
+                  <path d="M0 20 L0 0 L20 0" stroke={gold} strokeOpacity="0.65" strokeWidth="1.2" fill="none" style={{ transform: `${i === 1 || i === 3 ? 'scaleX(-1)' : ''} ${i >= 2 ? 'scaleY(-1)' : ''}`, transformOrigin: '10px 10px' }} />
+                  <circle cx="0" cy="0" r="2" fill={gold} opacity="0.55" style={{ transform: `${i === 1 || i === 3 ? 'scaleX(-1)' : ''} ${i >= 2 ? 'scaleY(-1)' : ''}`, transformOrigin: '10px 10px' }} />
+                </svg>
+              ))}
+              <div
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: `2px solid ${gold}`,
+                  boxShadow: `0 0 0 5px #080605, 0 0 0 7px ${gold}50`,
+                  padding: '12px',
+                }}
+              >
+                <Image
+                  src={invitado.qr_url}
+                  alt={`Código QR de ${invitado.nombre}`}
+                  width={168}
+                  height={168}
+                  className="block"
+                  priority
+                />
+              </div>
             </div>
           </motion.div>
         )}

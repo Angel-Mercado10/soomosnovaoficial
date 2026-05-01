@@ -19,7 +19,6 @@ const theme: EnvelopeTheme = {
 
 /**
  * Detailed rose SVG — multi-petal with depth and layered gold gradient tones.
- * At least 8 path elements with proper Bezier curves.
  */
 function RoseOrnament() {
   return (
@@ -44,45 +43,29 @@ function RoseOrnament() {
 
       {/* ── Left branch stem ── */}
       <path d="M4 74 Q16 58 30 62 Q42 44 60 54 Q76 36 96 46" stroke="#C9A84C" strokeWidth="0.9" strokeOpacity="0.38" fill="none" />
-      {/* Leaf 1 – larger, with vein */}
       <path d="M22 58 C16 50 12 44 20 47 C24 41 30 47 22 58Z" fill="#C9A84C" opacity="0.28" />
       <path d="M22 58 C19 53 21 47 22 58Z" stroke="#C9A84C" strokeWidth="0.45" strokeOpacity="0.38" fill="none" />
-      {/* Leaf 2 */}
       <path d="M42 50 C36 42 34 36 42 40 C48 34 52 42 42 50Z" fill="#C9A84C" opacity="0.24" />
       <path d="M42 50 C40 45 42 40 42 50Z" stroke="#C9A84C" strokeWidth="0.45" strokeOpacity="0.32" fill="none" />
-      {/* Leaf 3 – small */}
       <path d="M62 50 C57 43 56 37 63 41 C68 35 71 43 62 50Z" fill="#C9A84C" opacity="0.19" />
-      {/* Small bud left */}
       <path d="M82 42 C80 38 82 34 85 37 C88 34 90 38 88 42 C86 46 82 44 82 42Z" fill="#C9A84C" opacity="0.30" />
       <path d="M85 42 L85 46" stroke="#C9A84C" strokeWidth="0.7" strokeOpacity="0.28" />
 
-      {/* ── Center rose ── 8 outer petals */}
-      {/* Top petal */}
+      {/* ── Center rose ── */}
       <path d="M130 22 C134 27 138 33 133 39 C130 43 127 39 130 31 C130 26 130 22 130 22Z" fill="url(#rpGrad)" />
-      {/* Top-left petal */}
       <path d="M130 22 C126 27 122 33 127 39 C130 43 133 39 130 31 C130 26 130 22 130 22Z" fill="url(#rpGrad)" />
-      {/* Right petal */}
       <path d="M144 30 C142 35 139 40 133 39 C129 38 129 33 136 31 C140 29 144 30 144 30Z" fill="url(#rpGrad)" />
-      {/* Left petal */}
       <path d="M116 30 C118 35 121 40 127 39 C131 38 131 33 124 31 C120 29 116 30 116 30Z" fill="url(#rpGrad)" />
-      {/* Bottom-right petal */}
       <path d="M144 48 C140 45 137 41 139 36 C141 32 146 33 145 40 C145 44 144 48 144 48Z" fill="url(#rpGrad)" />
-      {/* Bottom-left petal */}
       <path d="M116 48 C120 45 123 41 121 36 C119 32 114 33 115 40 C115 44 116 48 116 48Z" fill="url(#rpGrad)" />
-      {/* Bottom petal right */}
       <path d="M130 54 C126 50 123 46 126 40 C129 36 133 37 132 43 C131 48 130 54 130 54Z" fill="url(#rpGrad)" />
-      {/* Bottom petal left */}
       <path d="M130 54 C134 50 137 46 134 40 C131 36 127 37 128 43 C129 48 130 54 130 54Z" fill="url(#rpGrad)" />
-      {/* Inner spiral petals */}
       <path d="M130 30 C133 32 136 36 132 39 C130 41 127 39 129 35Z" fill="#C9A84C" opacity="0.68" />
       <path d="M130 30 C127 32 124 36 128 39 C130 41 133 39 131 35Z" fill="#C9A84C" opacity="0.58" />
       <path d="M126 37 C128 34 132 34 134 37 C135 40 130 42 128 40Z" fill="#C9A84C" opacity="0.52" />
-      {/* Rose center */}
       <circle cx="130" cy="38" r="4.5" fill="url(#rcGrad)" />
       <circle cx="130" cy="38" r="2.2" fill="#D4B060" opacity="0.90" />
-      {/* Stem */}
       <path d="M130 54 Q129 62 130 74" stroke="#C9A84C" strokeWidth="0.9" strokeOpacity="0.32" fill="none" />
-      {/* Sepals */}
       <path d="M130 58 C126 54 122 56 126 60Z" fill="#C9A84C" opacity="0.22" />
       <path d="M130 58 C134 54 138 56 134 60Z" fill="#C9A84C" opacity="0.22" />
 
@@ -112,6 +95,96 @@ function GoldRule() {
   )
 }
 
+/** Marco ornamental de esquinas — 4 esquinas con flourishes clásicos */
+function CornerOrnaments() {
+  const g = '#C9A84C'
+  const cornerPath = `M0 40 L0 0 L40 0`
+  const flourish = `M4 36 Q4 20 8 14 Q12 8 20 6 M8 26 Q10 18 16 12`
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden="true"
+      style={{ opacity: 0.55 }}
+    >
+      {/* Top-left */}
+      <g transform="translate(8, 8)">
+        <path d={cornerPath} stroke={g} strokeWidth="1.0" strokeOpacity="0.50" fill="none" />
+        <path d={flourish} stroke={g} strokeWidth="0.6" strokeOpacity="0.30" fill="none" />
+        <circle cx="0" cy="0" r="2" fill={g} opacity="0.55" />
+        <rect x="-1.5" y="37" width="3" height="3" transform="rotate(45 0 38.5)" fill={g} opacity="0.40" />
+        <rect x="37" y="-1.5" width="3" height="3" transform="rotate(45 38.5 0)" fill={g} opacity="0.40" />
+      </g>
+      {/* Top-right */}
+      <g transform="translate(calc(100% - 8px), 8) scale(-1,1)">
+        <path d={cornerPath} stroke={g} strokeWidth="1.0" strokeOpacity="0.50" fill="none" />
+        <circle cx="0" cy="0" r="2" fill={g} opacity="0.55" />
+        <rect x="37" y="-1.5" width="3" height="3" transform="rotate(45 38.5 0)" fill={g} opacity="0.40" />
+      </g>
+      {/* Bottom-left */}
+      <g transform="translate(8, calc(100% - 8px)) scale(1,-1)">
+        <path d={cornerPath} stroke={g} strokeWidth="1.0" strokeOpacity="0.50" fill="none" />
+        <circle cx="0" cy="0" r="2" fill={g} opacity="0.55" />
+        <rect x="37" y="-1.5" width="3" height="3" transform="rotate(45 38.5 0)" fill={g} opacity="0.40" />
+      </g>
+      {/* Bottom-right */}
+      <g transform="translate(calc(100% - 8px), calc(100% - 8px)) scale(-1,-1)">
+        <path d={cornerPath} stroke={g} strokeWidth="1.0" strokeOpacity="0.50" fill="none" />
+        <circle cx="0" cy="0" r="2" fill={g} opacity="0.55" />
+        <rect x="37" y="-1.5" width="3" height="3" transform="rotate(45 38.5 0)" fill={g} opacity="0.40" />
+      </g>
+    </svg>
+  )
+}
+
+/** Sello circular dorado con texto ornamental */
+function GoldSeal() {
+  return (
+    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      {/* Outer ring */}
+      <circle cx="40" cy="40" r="37" stroke="#C9A84C" strokeOpacity="0.55" strokeWidth="1.0" />
+      {/* Inner ring */}
+      <circle cx="40" cy="40" r="31" stroke="#C9A84C" strokeOpacity="0.30" strokeWidth="0.7" strokeDasharray="2 3" />
+      {/* Center monogram field */}
+      <circle cx="40" cy="40" r="24" fill="#C9A84C" opacity="0.10" />
+      {/* Radiating lines — like a sun seal */}
+      {Array.from({ length: 16 }).map((_, i) => {
+        const angle = (i * 360) / 16
+        const rad = (angle * Math.PI) / 180
+        const x1 = 40 + Math.cos(rad) * 26
+        const y1 = 40 + Math.sin(rad) * 26
+        const x2 = 40 + Math.cos(rad) * 33
+        const y2 = 40 + Math.sin(rad) * 33
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#C9A84C" strokeOpacity="0.38" strokeWidth="0.7" />
+      })}
+      {/* Center monogram M */}
+      <text
+        x="40"
+        y="46"
+        textAnchor="middle"
+        fontFamily="Georgia, serif"
+        fontSize="22"
+        fill="#C9A84C"
+        opacity="0.85"
+        fontStyle="italic"
+      >M</text>
+    </svg>
+  )
+}
+
+/** Marco editorial horizontal doble línea */
+function EditorialBorder() {
+  return (
+    <div
+      className="w-full max-w-[300px] relative"
+      style={{ padding: '6px 0' }}
+      aria-hidden="true"
+    >
+      <div style={{ borderTop: '1px solid rgba(201,168,76,0.35)', marginBottom: '3px' }} />
+      <div style={{ borderTop: '1px solid rgba(201,168,76,0.15)' }} />
+    </div>
+  )
+}
+
 export function PlantillaClasica({ invitado, evento, parejaNombres }: InvitationTemplateProps) {
   return (
     <EnvelopeAnimation coupleNames={parejaNombres} theme={theme}>
@@ -121,7 +194,7 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
         animate="visible"
         className="min-h-screen bg-[#0A0A0A] flex flex-col items-center px-6 pt-10 pb-16 relative overflow-hidden"
       >
-        {/* SVG noise layer — profundidad de fondo */}
+        {/* SVG noise layer */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           aria-hidden="true"
@@ -134,10 +207,33 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
           <rect width="100%" height="100%" filter="url(#noiseClassica)" />
         </svg>
 
-        {/* Filete vertical dorado — detalle editorial izquierdo */}
+        {/* Marco de esquinas ornamentales — capa de profundidad principal */}
+        <CornerOrnaments />
+
+        {/* Filete vertical dorado izquierdo */}
         <div
           className="absolute left-0 top-0 bottom-0 w-px pointer-events-none"
           style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C20, #C9A84C40, #C9A84C20, transparent)' }}
+        />
+        {/* Filete vertical dorado derecho */}
+        <div
+          className="absolute right-0 top-0 bottom-0 w-px pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C20, #C9A84C40, #C9A84C20, transparent)' }}
+        />
+
+        {/* Patrón de papel verjurado — diagonal sutil */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage: `repeating-linear-gradient(
+              -45deg,
+              transparent,
+              transparent 18px,
+              rgba(201,168,76,0.018) 18px,
+              rgba(201,168,76,0.018) 19px
+            )`,
+          }}
         />
 
         {/* HERO — ornamento SVG principal */}
@@ -145,14 +241,46 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
           <RoseOrnament />
         </motion.div>
 
-        {/* Frase temática */}
-        <motion.p
+        {/* Frase temática con separadores */}
+        <motion.div variants={itemVariants} className="flex items-center gap-3 mb-3 relative z-10">
+          <div style={{ width: 32, height: 1, background: 'rgba(201,168,76,0.30)' }} />
+          <p
+            className="font-cormorant italic text-[11px] tracking-[0.20em] text-center"
+            style={{ color: '#C9A84C70' }}
+          >
+            Dos almas. Una historia. Un día para siempre.
+          </p>
+          <div style={{ width: 32, height: 1, background: 'rgba(201,168,76,0.30)' }} />
+        </motion.div>
+
+        {/* SELLO DORADO — debajo de la frase, alineado derecho */}
+        <motion.div
           variants={itemVariants}
-          className="font-cormorant italic text-[12px] tracking-[0.18em] text-center mb-4 relative z-10"
-          style={{ color: '#C9A84C80' }}
+          className="self-end mr-8 mb-2 relative z-10 opacity-70"
         >
-          Dos almas. Una historia. Un día para siempre.
-        </motion.p>
+          <GoldSeal />
+        </motion.div>
+
+        {/* Border editorial superior */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <EditorialBorder />
+        </motion.div>
+
+        {/* FRASE HERO */}
+        <motion.div variants={itemVariants} className="mb-3 relative z-10 text-center px-4">
+          <p className="font-cormorant text-2xl md:text-3xl text-white leading-snug">
+            ¡Nos casamos!{' '}
+            <span className="italic" style={{ color: '#C9A84C' }}>
+              Y te invitamos a celebrar nuestro día
+            </span>
+            <span className="text-[#C9A84C] text-xl">!!!</span>
+          </p>
+        </motion.div>
+
+        {/* Border editorial inferior */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <EditorialBorder />
+        </motion.div>
 
         {/* Gold ornament animado */}
         <motion.div
@@ -167,10 +295,19 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
         {/* PAREJA — nombres en tipografía masiva */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-6xl md:text-8xl text-white text-center leading-none tracking-[0.15em] mb-6 relative z-10"
+          className="font-cormorant text-6xl md:text-8xl text-white text-center leading-none tracking-[0.15em] mb-1 relative z-10"
         >
           {parejaNombres}
         </motion.h1>
+
+        {/* Monograma textual debajo del nombre */}
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-[10px] uppercase tracking-[0.55em] mb-6 relative z-10"
+          style={{ color: 'rgba(201,168,76,0.40)' }}
+        >
+          ─── unión para siempre ───
+        </motion.p>
 
         {/* SALUDO PERSONAL */}
         <motion.p
@@ -269,29 +406,52 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
           <GoldRule />
         </motion.div>
 
-        {/* QR — momento climático */}
+        {/* QR */}
         {invitado.qr_url && (
           <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
             <p className="font-cormorant text-2xl text-white text-center mb-4 tracking-wide">
               Tu pase de entrada
             </p>
-            <div
-              className="bg-white rounded-lg p-4"
-              style={{
-                border: '2px solid rgba(201,168,76,0.60)',
-                outline: '1px solid rgba(201,168,76,0.30)',
-                outlineOffset: '4px',
-                boxShadow: '0 0 40px rgba(201,168,76,0.15), 0 8px 32px rgba(0,0,0,0.5)',
-              }}
-            >
-              <Image
-                src={invitado.qr_url}
-                alt={`Código QR de ${invitado.nombre}`}
-                width={180}
-                height={180}
-                className="block"
-                priority
-              />
+            {/* Marco doble ornamental alrededor del QR */}
+            <div className="relative">
+              {/* Ornamento esquina top-left del QR */}
+              <svg className="absolute -top-3 -left-3 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M0 18 L0 0 L18 0" stroke="#C9A84C" strokeOpacity="0.55" strokeWidth="1.2" fill="none" />
+                <circle cx="0" cy="0" r="2" fill="#C9A84C" opacity="0.50" />
+              </svg>
+              {/* Ornamento esquina top-right */}
+              <svg className="absolute -top-3 -right-3 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M20 18 L20 0 L2 0" stroke="#C9A84C" strokeOpacity="0.55" strokeWidth="1.2" fill="none" />
+                <circle cx="20" cy="0" r="2" fill="#C9A84C" opacity="0.50" />
+              </svg>
+              {/* Ornamento esquina bottom-left */}
+              <svg className="absolute -bottom-3 -left-3 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M0 2 L0 20 L18 20" stroke="#C9A84C" strokeOpacity="0.55" strokeWidth="1.2" fill="none" />
+                <circle cx="0" cy="20" r="2" fill="#C9A84C" opacity="0.50" />
+              </svg>
+              {/* Ornamento esquina bottom-right */}
+              <svg className="absolute -bottom-3 -right-3 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M20 2 L20 20 L2 20" stroke="#C9A84C" strokeOpacity="0.55" strokeWidth="1.2" fill="none" />
+                <circle cx="20" cy="20" r="2" fill="#C9A84C" opacity="0.50" />
+              </svg>
+              <div
+                className="bg-white rounded-lg p-4"
+                style={{
+                  border: '2px solid rgba(201,168,76,0.60)',
+                  outline: '1px solid rgba(201,168,76,0.30)',
+                  outlineOffset: '4px',
+                  boxShadow: '0 0 40px rgba(201,168,76,0.15), 0 8px 32px rgba(0,0,0,0.5)',
+                }}
+              >
+                <Image
+                  src={invitado.qr_url}
+                  alt={`Código QR de ${invitado.nombre}`}
+                  width={180}
+                  height={180}
+                  className="block"
+                  priority
+                />
+              </div>
             </div>
           </motion.div>
         )}
@@ -317,6 +477,12 @@ export function PlantillaClasica({ invitado, evento, parejaNombres }: Invitation
 
         {/* FOOTER */}
         <motion.div variants={itemVariants} className="mt-14 flex flex-col items-center gap-2 relative z-10">
+          {/* GoldRule pequeño como separador de footer */}
+          <svg width="120" height="8" viewBox="0 0 120 8" fill="none" aria-hidden="true">
+            <line x1="0" y1="4" x2="52" y2="4" stroke="#C9A84C" strokeOpacity="0.20" strokeWidth="0.7" />
+            <rect x="56" y="1" width="6" height="6" transform="rotate(45 59 4)" fill="#C9A84C" opacity="0.40" />
+            <line x1="66" y1="4" x2="120" y2="4" stroke="#C9A84C" strokeOpacity="0.20" strokeWidth="0.7" />
+          </svg>
           <motion.div
             className="text-nova-gold/30 text-lg"
             animate={{ opacity: [0.5, 1, 0.5] }}

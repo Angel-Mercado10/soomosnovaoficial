@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { VALID_TEMPLATES, type CrearDemoInput, type CrearDemoResult, type EventoCreado, type Template } from '@/lib/admin-demo-types'
+import { generateQRBulk } from '@/lib/qr'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers internos
@@ -142,10 +143,23 @@ async function crearEventoConInvitados(
   const { data: invitadosData, error: invError } = await adminClient
     .from('invitados')
     .insert(invitadosInsert)
-    .select('nombre, token')
+    .select('id, nombre, token')
 
   if (invError) {
     throw new Error(`Error al crear invitados: ${invError.message}`)
+  }
+
+  // Generar QR para cada invitado demo
+  if (invitadosData && invitadosData.length > 0) {
+    const qrInput = invitadosData.map((inv) => ({
+      id: inv.id,
+      token: inv.token,
+      eventoId: eventoData!.id,
+    }))
+    // Los errores de QR no bloquean la creación; se logean internamente en generateQRBulk
+    await generateQRBulk(qrInput).catch((err: unknown) => {
+      console.error('[crearDemo] Error al generar QRs:', err)
+    })
   }
 
   return {

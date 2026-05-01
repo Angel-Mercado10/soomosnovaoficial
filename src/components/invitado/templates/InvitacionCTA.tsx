@@ -199,7 +199,7 @@ export function InvitacionCTA({
           className="text-xs text-center max-w-[220px]"
           style={{ color: `${textColor}60` }}
         >
-          Si cambiaste de opinión, podés actualizar tu respuesta.
+          Si cambió de opinión, puede actualizar su respuesta.
         </p>
 
         <a

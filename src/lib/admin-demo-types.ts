@@ -35,7 +35,7 @@ export interface EventoCreado {
   id: string
   slug: string
   template: Template
-  invitados: { nombre: string; token: string }[]
+  invitados: { id: string; nombre: string; token: string }[]
 }
 
 export interface CrearDemoResult {

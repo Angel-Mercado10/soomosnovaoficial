@@ -22,12 +22,9 @@ function LeafDivider({ color }: { color: string }) {
     <div className="flex items-center justify-center gap-2 w-full max-w-[260px]">
       <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${color}35)` }} />
       <svg width="24" height="16" viewBox="0 0 24 16" fill="none" aria-hidden="true">
-        {/* Left leaf with vein */}
         <path d="M8 8 C5 5 2 2 3.5 8 C2 14 5 11 8 8Z" fill={color} opacity="0.62" />
         <path d="M8 8 C5.5 6 4 3.5 3.5 8Z" stroke={color} strokeWidth="0.5" strokeOpacity="0.35" fill="none" />
-        {/* Stem */}
         <line x1="8" y1="8" x2="16" y2="8" stroke={color} strokeWidth="0.9" opacity="0.45" />
-        {/* Right leaf with vein */}
         <path d="M16 8 C19 5 22 2 20.5 8 C22 14 19 11 16 8Z" fill={color} opacity="0.62" />
         <path d="M16 8 C18.5 6 20 3.5 20.5 8Z" stroke={color} strokeWidth="0.5" strokeOpacity="0.35" fill="none" />
       </svg>
@@ -37,72 +34,50 @@ function LeafDivider({ color }: { color: string }) {
 }
 
 /**
- * Proper botanical illustration — detailed branches with varied leaf shapes,
- * veins, flowing curved stems, and a botanical center motif.
- * CRITICAL 7 — 10+ distinct path elements.
+ * Botanical illustration — ramas detalladas
  */
 function BotanicalHeader() {
   const green = '#6B9E6B'
   const ltGreen = '#8ABF8A'
   return (
     <svg width="260" height="70" viewBox="0 0 260 70" fill="none" aria-hidden="true">
-      {/* ── Left main stem ── */}
       <path d="M8 66 Q22 52 36 56 Q48 38 68 48 Q84 28 106 40" stroke={green} strokeWidth="1.0" strokeOpacity="0.48" fill="none" />
-      {/* Left branch offshoot */}
       <path d="M36 56 Q30 42 42 46" stroke={green} strokeWidth="0.8" strokeOpacity="0.38" fill="none" />
       <path d="M48 38 Q44 26 54 34" stroke={green} strokeWidth="0.7" strokeOpacity="0.32" fill="none" />
 
-      {/* Left leaf 1 — large ovate */}
       <path d="M22 50 C16 42 12 36 20 40 C24 34 32 40 22 50Z" fill={green} opacity="0.32" />
-      {/* Leaf 1 center vein */}
       <path d="M22 50 C19 45 20 40 22 50Z" stroke={ltGreen} strokeWidth="0.45" strokeOpacity="0.40" fill="none" />
-
-      {/* Left leaf 2 — narrower */}
       <path d="M40 44 C34 36 32 30 40 34 C46 28 50 36 40 44Z" fill={green} opacity="0.28" />
       <path d="M40 44 C37 39 39 34 40 44Z" stroke={ltGreen} strokeWidth="0.4" strokeOpacity="0.35" fill="none" />
-
-      {/* Left leaf 3 — tiny bud */}
       <path d="M60 44 C55 38 55 32 61 36 C67 32 68 40 60 44Z" fill={green} opacity="0.22" />
 
-      {/* Small berry cluster left */}
       <circle cx="84" cy="34" r="3" fill={green} opacity="0.38" />
       <circle cx="90" cy="30" r="2.2" fill={green} opacity="0.28" />
       <circle cx="97" cy="34" r="1.8" fill={green} opacity="0.22" />
 
-      {/* ── Center botanical motif — stylized wildflower ── */}
-      {/* Center circle */}
+      {/* Center botanical motif */}
       <circle cx="130" cy="32" r="5" fill={green} opacity="0.52" />
       <circle cx="130" cy="32" r="2.8" fill={ltGreen} opacity="0.65" />
-      {/* 6 petals */}
       <ellipse cx="130" cy="22" rx="3.5" ry="6" fill={green} opacity="0.38" />
       <ellipse cx="130" cy="22" rx="3.5" ry="6" transform="rotate(60 130 32)" fill={green} opacity="0.35" />
       <ellipse cx="130" cy="22" rx="3.5" ry="6" transform="rotate(120 130 32)" fill={green} opacity="0.32" />
       <ellipse cx="130" cy="22" rx="3.5" ry="6" transform="rotate(180 130 32)" fill={green} opacity="0.38" />
       <ellipse cx="130" cy="22" rx="3.5" ry="6" transform="rotate(240 130 32)" fill={green} opacity="0.35" />
       <ellipse cx="130" cy="22" rx="3.5" ry="6" transform="rotate(300 130 32)" fill={green} opacity="0.32" />
-      {/* Stem down */}
       <path d="M130 37 Q129 52 130 66" stroke={green} strokeWidth="0.9" strokeOpacity="0.35" fill="none" />
-      {/* Small leaves on center stem */}
       <path d="M130 48 C126 44 124 48 128 50Z" fill={green} opacity="0.28" />
       <path d="M130 48 C134 44 136 48 132 50Z" fill={green} opacity="0.28" />
 
-      {/* ── Right main stem (mirrored) ── */}
       <path d="M252 66 Q238 52 224 56 Q212 38 192 48 Q176 28 154 40" stroke={green} strokeWidth="1.0" strokeOpacity="0.48" fill="none" />
       <path d="M224 56 Q230 42 218 46" stroke={green} strokeWidth="0.8" strokeOpacity="0.38" fill="none" />
       <path d="M212 38 Q216 26 206 34" stroke={green} strokeWidth="0.7" strokeOpacity="0.32" fill="none" />
 
-      {/* Right leaf 1 */}
       <path d="M238 50 C244 42 248 36 240 40 C236 34 228 40 238 50Z" fill={green} opacity="0.32" />
       <path d="M238 50 C241 45 240 40 238 50Z" stroke={ltGreen} strokeWidth="0.45" strokeOpacity="0.40" fill="none" />
-
-      {/* Right leaf 2 */}
       <path d="M220 44 C226 36 228 30 220 34 C214 28 210 36 220 44Z" fill={green} opacity="0.28" />
       <path d="M220 44 C223 39 221 34 220 44Z" stroke={ltGreen} strokeWidth="0.4" strokeOpacity="0.35" fill="none" />
-
-      {/* Right leaf 3 */}
       <path d="M200 44 C205 38 205 32 199 36 C193 32 192 40 200 44Z" fill={green} opacity="0.22" />
 
-      {/* Small berry cluster right */}
       <circle cx="176" cy="34" r="3" fill={green} opacity="0.38" />
       <circle cx="170" cy="30" r="2.2" fill={green} opacity="0.28" />
       <circle cx="163" cy="34" r="1.8" fill={green} opacity="0.22" />
@@ -110,12 +85,87 @@ function BotanicalHeader() {
   )
 }
 
-/** Pequeño ícono de hoja inline para los detalles */
 function LeafIcon({ color }: { color: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="inline-block mr-1.5 mb-0.5">
       <path d="M7 12 C5 8 2 5 3 3 C5 1 9 3 10 6 C11 9 9 12 7 12Z" fill={color} opacity="0.70" />
       <path d="M7 12 C7 9 6 6 3 3" stroke={color} strokeWidth="0.5" strokeOpacity="0.45" fill="none" />
+    </svg>
+  )
+}
+
+/**
+ * Marco botánico de esquinas — hojas que emergen en las 4 esquinas
+ */
+function BotanicalCorners() {
+  const green = '#6B9E6B'
+  // Rama con hojas en esquina top-left
+  const TL = (
+    <g>
+      {/* Rama principal en L */}
+      <path d="M0 48 Q0 20 4 14 Q8 6 18 4 Q28 2 40 0" stroke={green} strokeWidth="1.0" strokeOpacity="0.45" fill="none" />
+      {/* Hoja 1 en la rama */}
+      <path d="M6 30 C2 24 0 18 4 20 C6 16 12 20 6 30Z" fill={green} opacity="0.28" />
+      <path d="M6 30 C4 26 5 20 6 30Z" stroke={green} strokeWidth="0.5" strokeOpacity="0.30" fill="none" />
+      {/* Hoja 2 */}
+      <path d="M12 18 C7 12 6 6 12 10 C16 6 20 12 12 18Z" fill={green} opacity="0.22" />
+      <path d="M12 18 C10 14 11 10 12 18Z" stroke={green} strokeWidth="0.4" strokeOpacity="0.25" fill="none" />
+      {/* Hoja 3 pequeña */}
+      <path d="M24 8 C20 3 20 0 24 2 C28 0 30 4 24 8Z" fill={green} opacity="0.18" />
+      {/* Baya pequeña */}
+      <circle cx="0" cy="0" r="3" fill={green} opacity="0.38" />
+      <circle cx="40" cy="0" r="2" fill={green} opacity="0.28" />
+    </g>
+  )
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden="true"
+      style={{ opacity: 0.75 }}
+    >
+      {/* Top-left */}
+      <g transform="translate(6, 6)">{TL}</g>
+      {/* Top-right (mirrored X) */}
+      <g transform="translate(calc(100% - 6px), 6) scale(-1, 1)">{TL}</g>
+      {/* Bottom-left (mirrored Y) */}
+      <g transform="translate(6, calc(100% - 6px)) scale(1, -1)">{TL}</g>
+      {/* Bottom-right (mirrored XY) */}
+      <g transform="translate(calc(100% - 6px), calc(100% - 6px)) scale(-1, -1)">{TL}</g>
+    </svg>
+  )
+}
+
+/**
+ * Patrón de venas de hoja — fondo sutil
+ */
+function LeafVeinPattern() {
+  return (
+    <div
+      className="absolute inset-0 pointer-events-none"
+      aria-hidden="true"
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 58 C25 45 15 35 12 20 C18 28 22 38 30 58Z' fill='none' stroke='rgba(107,158,107,0.04)' stroke-width='0.8'/%3E%3Cpath d='M30 58 C35 45 45 35 48 20 C42 28 38 38 30 58Z' fill='none' stroke='rgba(107,158,107,0.04)' stroke-width='0.8'/%3E%3C/svg%3E")`,
+        backgroundSize: '60px 60px',
+      }}
+    />
+  )
+}
+
+/**
+ * Segundo header botánico — versión invertida / espejada para el footer
+ */
+function BotanicalFooter() {
+  const green = '#6B9E6B'
+  return (
+    <svg width="200" height="40" viewBox="0 0 200 40" fill="none" aria-hidden="true" style={{ opacity: 0.35 }}>
+      <path d="M4 38 Q18 28 30 32 Q42 18 58 26 Q72 10 92 18" stroke={green} strokeWidth="0.8" strokeOpacity="0.55" fill="none" />
+      <path d="M16 30 C10 24 8 18 14 22 C18 16 24 22 16 30Z" fill={green} opacity="0.35" />
+      <path d="M36 22 C30 16 30 10 36 14 C40 10 44 16 36 22Z" fill={green} opacity="0.28" />
+      <circle cx="100" cy="18" r="5" fill={green} opacity="0.45" />
+      <circle cx="100" cy="18" r="2.5" fill={green} opacity="0.60" />
+      <path d="M196 38 Q182 28 170 32 Q158 18 142 26 Q128 10 108 18" stroke={green} strokeWidth="0.8" strokeOpacity="0.55" fill="none" />
+      <path d="M184 30 C190 24 192 18 186 22 C182 16 176 22 184 30Z" fill={green} opacity="0.35" />
+      <path d="M164 22 C170 16 170 10 164 14 C160 10 156 16 164 22Z" fill={green} opacity="0.28" />
     </svg>
   )
 }
@@ -134,7 +184,10 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
         className="min-h-screen flex flex-col items-center px-6 pt-10 pb-16 relative"
         style={{ backgroundColor: '#060C08' }}
       >
-        {/* Texture overlay */}
+        {/* Patrón de venas de hoja — textura sutil de fondo */}
+        <LeafVeinPattern />
+
+        {/* Gradiente ambiental */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -142,7 +195,10 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           }}
         />
 
-        {/* BotanicalHeader como watermark absoluto — profundidad de fondo */}
+        {/* Marco botánico de 4 esquinas */}
+        <BotanicalCorners />
+
+        {/* BotanicalHeader como watermark absoluto */}
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
           aria-hidden="true"
@@ -166,20 +222,50 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
         {/* Frase temática */}
         <motion.p
           variants={itemVariants}
-          className="font-cormorant italic text-[13px] tracking-wider text-center mb-3 relative z-10 max-w-[240px]"
+          className="font-cormorant italic text-[13px] tracking-wider text-center mb-2 relative z-10 max-w-[240px]"
           style={{ color: dimMint }}
         >
           Como la naturaleza misma, nuestro amor florece cada día.
         </motion.p>
 
+        {/* Segundo separador botánico ligero */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <LeafDivider color={sage} />
+        </motion.div>
+
+        {/* FRASE HERO */}
+        <motion.div variants={itemVariants} className="mb-6 relative z-10 text-center px-4">
+          <p className="font-cormorant text-2xl md:text-3xl leading-snug" style={{ color: mint }}>
+            ¡Nos casamos!{' '}
+            <span className="italic" style={{ color: sage }}>
+              Y te invitamos a celebrar nuestro día
+            </span>
+            <span style={{ color: sage }} className="text-xl">!!!</span>
+          </p>
+        </motion.div>
+
+        {/* Separador con hoja después de la frase */}
+        <motion.div variants={itemVariants} className="mb-4 relative z-10">
+          <LeafDivider color={sage} />
+        </motion.div>
+
         {/* PAREJA — nombres masivos */}
         <motion.h1
           variants={itemVariants}
-          className="font-cormorant text-6xl md:text-8xl text-center leading-none tracking-[0.15em] mb-6 relative z-10"
+          className="font-cormorant text-6xl md:text-8xl text-center leading-none tracking-[0.15em] mb-1 relative z-10"
           style={{ color: mint }}
         >
           {parejaNombres}
         </motion.h1>
+
+        {/* Subtítulo jardín */}
+        <motion.p
+          variants={itemVariants}
+          className="font-cormorant text-[10px] uppercase tracking-[0.45em] mb-6 relative z-10 text-center"
+          style={{ color: `${dimMint}50` }}
+        >
+          ❧ jardín de bodas ❧
+        </motion.p>
 
         {/* SALUDO PERSONAL */}
         <motion.p
@@ -215,8 +301,7 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           <LeafDivider color={sage} />
         </motion.div>
 
-        {/* DETALLES — con ícono de hoja y separador · */}
-        {/* Fecha */}
+        {/* DETALLES */}
         <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
           <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
             <LeafIcon color={sage} />
@@ -227,7 +312,6 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           </p>
         </motion.div>
 
-        {/* Venue */}
         {evento.lugar_nombre && (
           <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
@@ -262,7 +346,6 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           </motion.div>
         )}
 
-        {/* Dress code */}
         {evento.dress_code && (
           <motion.div variants={itemVariants} className="text-center mb-8 relative z-10">
             <p className="text-[9px] uppercase tracking-[0.3em] mb-2" style={{ color: `${dimMint}80` }}>
@@ -278,26 +361,27 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           <LeafDivider color={sage} />
         </motion.div>
 
-        {/* QR — frame orgánico con hojas decorativas en esquinas superiores */}
+        {/* QR — frame orgánico con hojas decorativas */}
         {invitado.qr_url && (
           <motion.div variants={itemVariants} className="flex flex-col items-center mb-3 relative z-10">
             <p className="font-cormorant text-2xl text-center mb-4" style={{ color: mint }}>
               Tu entrada al jardín
             </p>
             <div className="relative">
-              {/* Hojas decorativas esquinas superiores */}
-              <svg
-                className="absolute -top-3 -left-3 pointer-events-none"
-                width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-              >
-                <path d="M4 20 C4 12 8 4 16 4 C12 10 8 16 4 20Z" fill={sage} opacity="0.35" />
+              {/* Hojas decorativas en las 4 esquinas del QR */}
+              <svg className="absolute -top-4 -left-4 pointer-events-none" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M4 24 C4 16 8 6 18 4 C14 12 8 18 4 24Z" fill={sage} opacity="0.38" />
+                <path d="M4 24 C8 18 14 12 18 4" stroke={sage} strokeWidth="0.6" strokeOpacity="0.30" fill="none" />
               </svg>
-              <svg
-                className="absolute -top-3 -right-3 pointer-events-none"
-                width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-                style={{ transform: 'scaleX(-1)' }}
-              >
-                <path d="M4 20 C4 12 8 4 16 4 C12 10 8 16 4 20Z" fill={sage} opacity="0.35" />
+              <svg className="absolute -top-4 -right-4 pointer-events-none" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M24 24 C24 16 20 6 10 4 C14 12 20 18 24 24Z" fill={sage} opacity="0.38" />
+                <path d="M24 24 C20 18 14 12 10 4" stroke={sage} strokeWidth="0.6" strokeOpacity="0.30" fill="none" />
+              </svg>
+              <svg className="absolute -bottom-4 -left-4 pointer-events-none" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" style={{ transform: 'scaleY(-1)' }}>
+                <path d="M4 24 C4 16 8 6 18 4 C14 12 8 18 4 24Z" fill={sage} opacity="0.38" />
+              </svg>
+              <svg className="absolute -bottom-4 -right-4 pointer-events-none" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" style={{ transform: 'scale(-1,-1)' }}>
+                <path d="M4 24 C4 16 8 6 18 4 C14 12 8 18 4 24Z" fill={sage} opacity="0.38" />
               </svg>
               <div
                 style={{
@@ -367,12 +451,9 @@ export function PlantillaBotanical({ invitado, evento, parejaNombres }: Invitati
           />
         </motion.div>
 
-        {/* FOOTER */}
+        {/* FOOTER botánico */}
         <motion.div variants={itemVariants} className="mt-12 flex flex-col items-center gap-2 relative z-10">
-          <svg width="32" height="20" viewBox="0 0 32 20" fill="none" aria-hidden="true">
-            <path d="M16 18 Q8 10 4 4 Q10 6 16 10 Q22 6 28 4 Q24 10 16 18Z"
-              fill={sage} opacity="0.35" />
-          </svg>
+          <BotanicalFooter />
           <p className="text-[9px] uppercase tracking-widest" style={{ color: `${dimMint}30` }}>SoomosNova</p>
         </motion.div>
       </motion.div>
