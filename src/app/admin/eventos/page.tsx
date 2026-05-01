@@ -1,6 +1,8 @@
 import 'server-only'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
+import { deleteEventoAction } from './[id]/actions'
+import { DeleteEventoRowButton } from './delete-evento-row-button'
 
 export const metadata: Metadata = {
   title: 'Eventos — Admin SoomosNova',
@@ -108,6 +110,7 @@ export default async function AdminEventosPage() {
                           >
                             Detalle →
                           </a>
+                          <DeleteEventoRowButton eventoId={evento.id} onAction={deleteEventoAction} />
                         </div>
                       </td>
                     </tr>

@@ -24,6 +24,31 @@ async function getAdminUser() {
   return user
 }
 
+export async function deleteEventoAction(eventoId: string): Promise<{ success: boolean; error?: string }> {
+  const user = await getAdminUser()
+  if (!user) {
+    redirect('/auth/login')
+  }
+
+  const adminClient = createAdminClient()
+
+  const { error } = await adminClient
+    .from('eventos')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', eventoId)
+    .is('deleted_at', null)
+
+  if (error) {
+    console.error('[deleteEventoAction] Error:', error)
+    return { success: false, error: 'No fue posible eliminar el evento. Intente de nuevo.' }
+  }
+
+  revalidatePath('/admin/eventos')
+  revalidatePath(`/admin/eventos/${eventoId}`)
+
+  return { success: true }
+}
+
 export async function markEventoAsPaidAction(eventoId: string): Promise<{ success: boolean; error?: string }> {
   const user = await getAdminUser()
   if (!user) {

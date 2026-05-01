@@ -7,7 +7,8 @@ import { getPagosRepository } from '@/features/pagos/infrastructure/supabase-pag
 import { getPagosByEvento } from '@/features/pagos/application/get-pagos-by-evento.use-case'
 import { formatAmountMXN } from '@/features/pagos/domain/pago.entity'
 import { MarkAsPaidButton } from '@/features/pagos/ui/mark-as-paid-button'
-import { markEventoAsPaidAction } from './actions'
+import { markEventoAsPaidAction, deleteEventoAction } from './actions'
+import { DeleteEventoButton } from './delete-evento-button'
 
 export const metadata: Metadata = {
   title: 'Detalle de evento — Admin SoomosNova',
@@ -109,6 +110,15 @@ export default async function AdminEventoDetallePage({ params }: Props) {
           <MarkAsPaidButton eventoId={id} onAction={markEventoAsPaidAction} />
         </div>
       )}
+
+      {/* Zona de acción administrativa — Eliminación */}
+      <div className="bg-[#111111] border border-red-500/20 rounded-xl px-6 py-5 space-y-3">
+        <p className="text-[#9CA3AF] text-sm font-medium">Zona de administración</p>
+        <p className="text-[#6B6B6B] text-xs">
+          Eliminar el evento lo ocultará del sistema administrativo. Los registros asociados (pagos, parejas, invitados) no serán eliminados.
+        </p>
+        <DeleteEventoButton eventoId={id} onAction={deleteEventoAction} redirectAfter />
+      </div>
 
       {/* Historial de pagos */}
       <div className="space-y-3">
