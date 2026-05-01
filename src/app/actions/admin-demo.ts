@@ -213,19 +213,44 @@ export async function crearDemo(input: CrearDemoInput): Promise<CrearDemoResult>
     }
     phantomUserId = phantomUser.user.id
 
-    // 4. Crear pareja
-    const { data: parejaData, error: parejaError } = await adminClient
+    // 4. Crear o completar pareja.
+    // El trigger de Supabase `handle_new_user` puede crear una fila en parejas
+    // automáticamente al crear el auth user. Si eso ocurre, la reutilizamos y
+    // la actualizamos con los datos reales del demo para evitar violar
+    // `parejas_auth_user_id_key`.
+    const parejaPayload = {
+      nombre_1: input.nombre_1.trim().slice(0, 200),
+      nombre_2: input.nombre_2.trim().slice(0, 200),
+      email: input.email_contacto.trim().slice(0, 300),
+      telefono: input.telefono?.trim().slice(0, 50) ?? null,
+      plan: input.plan,
+    }
+
+    const { data: parejaExistente, error: parejaExistenteError } = await adminClient
       .from('parejas')
-      .insert({
-        auth_user_id: phantomUserId,
-        nombre_1: input.nombre_1.trim().slice(0, 200),
-        nombre_2: input.nombre_2.trim().slice(0, 200),
-        email: input.email_contacto.trim().slice(0, 300),
-        telefono: input.telefono?.trim().slice(0, 50) ?? null,
-        plan: input.plan,
-      })
       .select('id')
-      .single()
+      .eq('auth_user_id', phantomUserId)
+      .maybeSingle()
+
+    if (parejaExistenteError) {
+      throw new Error(`Error al verificar pareja demo: ${parejaExistenteError.message}`)
+    }
+
+    const { data: parejaData, error: parejaError } = parejaExistente
+      ? await adminClient
+          .from('parejas')
+          .update(parejaPayload)
+          .eq('id', parejaExistente.id)
+          .select('id')
+          .single()
+      : await adminClient
+          .from('parejas')
+          .insert({
+            auth_user_id: phantomUserId,
+            ...parejaPayload,
+          })
+          .select('id')
+          .single()
 
     if (parejaError || !parejaData) {
       throw new Error(`Error al crear pareja: ${parejaError?.message}`)
